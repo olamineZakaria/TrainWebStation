@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TrainStation</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <!-- Include Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-light bg-light">
+            <div class="container">
+                <div class="logo navbar-brand">TrainStation</div>
+            </div>
+        </nav>
+    </header>
+    
+    <main class="container mt-4">
+        <h1 class="text-center">Nouveau projet</h1>
+        <div class="actions text-center mb-4">
+            <button class="btn btn-primary"><i class="fab fa-google-drive"></i> Ouvrir un projet existant dans Drive.</button>
+            <button class="btn btn-secondary"><i class="fas fa-folder"></i> Ouvrir un projet existant à partir d'un fichier.</button>
+        </div>
+
+        <div class="row">
+            <!-- Première carte : Charger des images -->
+            <div class="col-md-4 mb-4">
+                <div class="card">
+                    <a href="{{ url_for('projet_image_webcam') }}" class="text-decoration-none text-dark">
+                        <img src="{{ url_for('static', filename='assets/png.png') }}" class="card-img-top" alt="Projet Images">
+                        <div class="card-body">
+                            <h3 class="card-title">Projet Images</h3>
+                            <p class="card-text">Entrainez le modèle avec des images issues d'un fichier ou de votre webcam.</p>
+                        </div>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Deuxième carte : Charger un fichier CSV -->
+            <div class="col-md-4 mb-4">
+                <div class="card">
+                    <a href="{{ url_for('projet_csv') }}" class="text-decoration-none text-dark">
+                        <img src="{{ url_for('static', filename='assets/fichier-csv.png') }}" class="card-img-top" alt="Projet CSV">
+                        <div class="card-body">
+                            <h3 class="card-title">Projet Données Mixtes</h3>
+                            <p class="card-text">Entrainez le modèle avec des données mixtes à partir d'un fichier CSV.</p>
+                        </div>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Troisième carte : Coming Soon -->
+            <div class="col-md-4 mb-4">
+                <div class="card coming-soon">
+                    <div class="card-body">
+                        <h3 class="card-title">Projet à venir</h3>
+                        <p class="card-text">Ce projet sera bientôt disponible !</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="bg-light text-center mt-4">
+        <select name="language" id="language" class="form-select" aria-label="Select language">
+            <option value="français">français</option>
+        </select>
+    </footer>
+
+    <!-- Include Bootstrap JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

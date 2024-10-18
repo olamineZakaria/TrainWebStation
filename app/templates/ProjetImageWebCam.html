@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TrainStation</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <!-- Include Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-light bg-light">
+            <div class="container">
+                <span class="navbar-brand mb-0 h1">TrainStation</span>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container mt-4">
+        <div class="main-container">
+            <div class="row" id="class-container">
+                <!-- Class Card Template -->
+                <div class="col-md-6 mb-4 class-card">
+                    <div class="card">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <input type="text" class="form-control class-name" value="Class 1" placeholder="Nom de la classe" />
+                            <button class="btn btn-danger delete-btn"><i class="fas fa-trash-alt"></i></button>
+                        </div>
+                        <div class="card-body">
+                            <p>Ajouter des échantillons d'images :</p>
+                            <div class="button-group">
+                                <input type="file" class="file-input" accept="image/*" multiple style="display: none;" />
+                                <button class="btn btn-primary file-upload-btn"><i class="fas fa-upload"></i> Importer</button>
+                                <button class="btn btn-secondary webcam-btn"><i class="fas fa-video"></i> Webcam</button>
+                            </div>
+                            <div class="image-preview-container" style="max-height: 100px; overflow: auto;"></div>
+                            <p class="image-count">Nombre d'images: <span class="count">0</span></p>
+                            <!-- Video container for responsive webcam -->
+                            <div class="video-container" style="display: none;">
+                                <video class="webcam" autoplay playsinline></video>
+                            </div>                            
+                            <canvas class="snapshot" style="display: none;"></canvas>
+                            <button class="btn btn-warning stop-webcam-btn" style="display: none;"><i class="fas fa-times"></i> Arrêter Webcam</button>
+                            <button class="btn btn-danger clear-images-btn" style="display: none;">Supprimer les images</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Second Class Card -->
+                <div class="col-md-6 mb-4 class-card">
+                    <div class="card">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <input type="text" class="form-control class-name" value="Class 2" placeholder="Nom de la classe" />
+                            <button class="btn btn-danger delete-btn"><i class="fas fa-trash-alt"></i></button>
+                        </div>
+                        <div class="card-body">
+                            <p>Ajouter des échantillons d'images :</p>
+                            <div class="button-group">
+                                <input type="file" class="file-input" accept="image/*" multiple style="display: none;" />
+                                <button class="btn btn-primary file-upload-btn"><i class="fas fa-upload"></i> Importer</button>
+                                <button class="btn btn-secondary webcam-btn"><i class="fas fa-video"></i> Webcam</button>
+                            </div>
+                            <div class="image-preview-container" style="max-height: 100px; overflow: auto;"></div>
+                            <p class="image-count">Nombre d'images: <span class="count">0</span></p>
+                            <!-- Video container for responsive webcam -->
+                            <div class="video-container" style="display: none;">
+                                <video class="webcam" autoplay playsinline></video>
+                            </div>                       
+                            <canvas class="snapshot" style="display: none;"></canvas>
+                            <button class="btn btn-warning stop-webcam-btn" style="display: none;"><i class="fas fa-times"></i> Arrêter Webcam</button>
+                            <button class="btn btn-danger clear-images-btn" style="display: none;">Supprimer les images</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Button for adding a new class at the bottom -->
+            <button id="add-class-btn" class="btn btn-success">+ Ajouter une classe</button>
+        </div>
+    </main>
+
+    <footer class="bg-light text-center mt-4 p-3">
+        <select name="language" id="language" class="form-select d-inline-block" aria-label="Select language">
+            <option value="français">français</option>
+        </select>
+    </footer>
+
+    <!-- Include Bootstrap JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <!-- Inclusion du fichier JavaScript -->
+    <script src="{{ url_for('static', filename='scripts.js') }}"></script>
+</body>
+</html>

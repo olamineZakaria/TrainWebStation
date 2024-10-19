@@ -69,6 +69,7 @@ function handleFileUpload(event) {
 }
 
 
+
 function displayDataInTable(data) {
     const tableHeader = document.getElementById('tableHeader');
     const tableBody = document.getElementById('tableBody');
@@ -138,6 +139,7 @@ function displayDataInTable(data) {
 
 
 // Gestion de la soumission du formulaire de configuration du modèle
+// Gestion de la soumission du formulaire de configuration du modèle
 document.getElementById('modelConfigForm').addEventListener('submit', function(event) {
     event.preventDefault(); // Empêcher le rechargement de la page
 
@@ -152,6 +154,10 @@ document.getElementById('modelConfigForm').addEventListener('submit', function(e
         activationFunction: document.getElementById('activationFunction').value
     };
 
+    // Afficher le spinner lors de la sauvegarde
+    const configSpinner = document.getElementById('configSpinner');
+    configSpinner.style.display = 'inline-block';
+
     // Envoi des données au serveur
     fetch('/save_config', {
         method: 'POST',
@@ -162,6 +168,9 @@ document.getElementById('modelConfigForm').addEventListener('submit', function(e
     })
     .then(response => response.json())
     .then(data => {
+        // Retirer le spinner après la réponse
+        configSpinner.style.display = 'none';
+
         const configAlertMessage = document.getElementById('configAlertMessage');
         if (data.success) {
             configAlertMessage.textContent = 'Configuration sauvegardée avec succès!';
@@ -176,6 +185,8 @@ document.getElementById('modelConfigForm').addEventListener('submit', function(e
     })
     .catch(error => {
         console.error('Erreur:', error);
+        // Retirer le spinner en cas d'erreur
+        configSpinner.style.display = 'none';
         const configAlertMessage = document.getElementById('configAlertMessage');
         configAlertMessage.textContent = 'Erreur lors de la sauvegarde de la configuration.';
         configAlertMessage.classList.remove('alert-success');
@@ -183,6 +194,7 @@ document.getElementById('modelConfigForm').addEventListener('submit', function(e
         configAlertMessage.style.display = 'block';
     });
 });
+
 
 // Ajout de la logique pour gérer le nombre de couches et de neurones
 document.getElementById('numLayers').addEventListener('change', updateNeuronsPerLayer);

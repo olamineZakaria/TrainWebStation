@@ -42,7 +42,6 @@
                     </form>
                     <!-- Alertes pour les messages d'erreur/success -->
                     <div id="alertMessage" class="alert mt-3" style="display: none;"></div>
-                    <div id="configAlertMessage" class="alert mt-3" style="display: none;"></div>
                 </div>
             </div>
 
@@ -60,11 +59,11 @@
             <form id="modelConfigForm">
                 <div class="form-group">
                     <label for="targetColumn">Choisir la colonne cible</label>
-                    <select class="form-control" id="targetColumn" required></select>
+                    <select class="form-control" id="targetColumn" disabled required></select>
                 </div>
                 <div class="form-group">
                     <label for="inputColumns">Choisir les colonnes d'entrée</label>
-                    <select class="form-control" id="inputColumns" multiple required></select>
+                    <select class="form-control" id="inputColumns" multiple disabled required></select>
                 </div>                
                 <div class="form-group">
                     <label for="problemType">Choisir le type de problème</label>
@@ -76,7 +75,7 @@
                 <div class="form-group">
                     <label for="lossFunction">Choisir la fonction de coût</label>
                     <select class="form-control" id="lossFunction" disabled>
-                        <option value="mean_squared_error">Erreur quadratique moyenne</option>
+                        <option value="mse">Erreur quadratique moyenne</option>
                         <option value="cross_entropy">Entropie croisée</option>
                     </select>
                 </div>
@@ -101,9 +100,15 @@
                     </select>
                 </div>
                 <button type="submit" class="btn btn-primary" disabled>Sauvegarder la configuration</button>
+                <div id="configAlertMessage" class="alert mt-3" style="display: none;"></div>
+    
+            <!-- Spinner pour la sauvegarde -->
+            <div id="configSpinner" class="spinner-border text-primary" role="status" style="display: none;">
+                <span class="sr-only">Chargement...</span>
+            </div>
             </form>
-
-            <div id="configAlertMessage" class="alert mt-3" style="display: none;"></div>
+            
+            
         </div>
     </main>
 

@@ -4,42 +4,39 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TrainStation</title>
-    <!-- Bootstrap CSS -->
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
-    <!-- Font Awesome CSS -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
     <style>
-        /* Style for the spinner */
+        /* Style pour le spinner */
         .spinner-border {
-            display: none; /* Initially hidden */
+            display: none; /* Initialement caché */
         }
-        /* Style for the file input frame */
+        /* Style pour le cadre d'entrée de fichier */
         .file-input-frame {
-            border: 2px dashed #007bff; /* Border style */
-            padding: 20px; /* Padding inside the frame */
-            border-radius: 5px; /* Rounded corners */
-            margin-bottom: 20px; /* Space below the frame */
-            text-align: center; /* Center content */
+            border: 2px dashed #007bff;
+            padding: 20px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            text-align: center;
         }
-        /* Style for the file input icon */
+        /* Style pour l'icône d'entrée de fichier */
         .file-input-icon {
-            font-size: 40px; /* Size of the icon */
-            color: #007bff; /* Color of the icon */
-            margin-bottom: 10px; /* Space below the icon */
+            font-size: 40px;
+            color: #007bff;
+            margin-bottom: 10px;
         }
-        /* Hide the default file input text */
+        /* Masquer le texte par défaut d'entrée de fichier */
         .file-input {
             position: absolute;
             width: 100%;
             height: 100%;
-            opacity: 0; /* Make the input invisible */
+            opacity: 0;
             cursor: pointer;
         }
-        /* Style for displaying the selected file name */
+        /* Style pour afficher le nom du fichier sélectionné */
         .file-name {
-            margin-top: 10px; /* Space above the file name */
-            font-weight: bold; /* Make the file name bold */
+            margin-top: 10px;
+            font-weight: bold;
             cursor: pointer;
         }
     </style>
@@ -60,12 +57,11 @@
                     <h5 class="card-title">Téléchargez votre fichier ici</h5>
                     <h6 class="card-subtitle mb-2 text-muted">La taille maximale du fichier est de 1 Go</h6>
                     
-                    <!-- Form for uploading files -->
                     <form id="uploadForm">
                         <div class="file-input-frame">
-                            <i class="fas fa-file-upload file-input-icon"></i> <!-- Icon for file upload -->
+                            <i class="fas fa-file-upload file-input-icon"></i>
                             <input class="file-input" type="file" accept=".csv,.tsv,.xlsx" id="fileID" required>
-                            <div class="file-name" id="fileNameDisplay">Aucun fichier sélectionné</div> <!-- Display selected file name -->
+                            <div class="file-name" id="fileNameDisplay">Aucun fichier sélectionné</div>
                         </div>
                         <div class="button-group">
                             <button id="viewDatasetAndAnalysisBtn" type="submit" class="btn btn-primary">Voir le dataset et l'analyse</button>
@@ -75,36 +71,73 @@
                         </div>
                     </form>
                     
-                    <!-- Alert messages -->
                     <div id="alertMessage" class="alert mt-3" style="display: none;"></div>
                 </div>
             </div>
 
-            <!-- Zone où les données ou l'analyse seront affichées -->
             <div class="mt-4">
-                <table class="table table-bordered">
-                    <thead>
-                        <tr>
-                            <th scope="col">Données / Analyse</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>
-                                <div id="wdr-component"></div>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+                <div style="max-height: 300px; overflow-y: auto;">
+                    <table class="table table-bordered">
+                        <thead id="tableHeader" style="background-color: #007bff; color: white;"></thead>
+                        <tbody id="tableBody"></tbody>
+                    </table>
+                </div>
             </div>
+
+            <!-- Formulaire de configuration du modèle -->
+            <h3 class="mt-4">Configuration du Modèle</h3>
+            <form id="modelConfigForm">
+                <div class="form-group">
+                    <label for="targetColumn">Choisir la colonne cible</label>
+                    <input type="text" class="form-control" id="targetColumn" required>
+                </div>
+                <div class="form-group">
+                    <label for="inputColumns">Choisir les colonnes d'entrée (séparées par des virgules)</label>
+                    <input type="text" class="form-control" id="inputColumns" required>
+                </div>
+                <div class="form-group">
+                    <label for="problemType">Choisir le type de problème</label>
+                    <select class="form-control" id="problemType">
+                        <option value="regression">Régression</option>
+                        <option value="classification">Classification</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="lossFunction">Choisir la fonction de coût</label>
+                    <select class="form-control" id="lossFunction">
+                        <option value="mean_squared_error">Erreur quadratique moyenne</option>
+                        <option value="cross_entropy">Entropie croisée</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="numEpochs">Nombre d'époques</label>
+                    <input type="number" class="form-control" id="numEpochs" min="1" value="10" required>
+                </div>
+                <div class="form-group">
+                    <label for="numLayers">Nombre de couches dans le modèle</label>
+                    <input type="number" class="form-control" id="numLayers" min="1" value="1" required>
+                </div>
+                <div class="form-group" id="neuronsPerLayerGroup" style="display: none;">
+                    <label for="neuronsPerLayer">Nombre de neurones dans chaque couche</label>
+                    <div id="neuronsPerLayerContainer"></div>
+                </div>
+                <div class="form-group">
+                    <label for="activationFunction">Choisir la fonction d'activation</label>
+                    <select class="form-control" id="activationFunction">
+                        <option value="relu">ReLU</option>
+                        <option value="sigmoid">Sigmoid</option>
+                        <option value="tanh">Tanh</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary">Sauvegarder la configuration</button>
+            </form>
+            <div id="configAlertMessage" class="alert mt-3" style="display: none;"></div>
         </div>
     </main>
 
-    <!-- Inclusion de jQuery, Popper.js, Bootstrap JS -->
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    <!-- Inclusion du fichier JavaScript -->
-    <script src="{{ url_for('static', filename='csv_page.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/csv_page.js') }}"></script>
 </body>
 </html>

@@ -34,5 +34,25 @@ def upload_file():
         file_path = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
         file.save(file_path)
         return jsonify({'url': file_path})  # Retourner l'URL du fichier uploadé
+@app.route('/save_config', methods=['POST'])
+def save_config():
+    config_data = request.get_json()  # Obtenir les données JSON envoyées
+
+    # Créer un fichier texte pour sauvegarder la configuration
+    config_file_path = os.path.join(app.config['UPLOAD_FOLDER'], 'model_config.txt')
+    
+    with open(config_file_path, 'w') as f:
+        f.write("Configuration du modèle:\n")
+        f.write(f"Colonne cible: {config_data['targetColumn']}\n")
+        f.write(f"Colonnes d'entrée: {', '.join(config_data['inputColumns'])}\n")
+        f.write(f"Type de problème: {config_data['problemType']}\n")
+        f.write(f"Fonction de coût: {config_data['lossFunction']}\n")
+        f.write(f"Nombre d'époques: {config_data['numEpochs']}\n")
+        f.write(f"Nombre de couches: {config_data['numLayers']}\n")
+        f.write(f"Neurones par couche: {', '.join(config_data['neuronsPerLayer'])}\n")
+        f.write(f"Fonction d'activation: {config_data['activationFunction']}\n")
+
+    return jsonify({'success': True})  # Retourner un succès en JSON
+
 if __name__ == '__main__':
     app.run(debug=True)

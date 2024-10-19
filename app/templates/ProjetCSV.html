@@ -7,40 +7,6 @@
     <link rel="shortcut icon" href="{{url_for('static',filename='assets/LOGO-mini.png')}}" type="image/x-icon">
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
-    <style>
-        /* Style pour le spinner */
-        .spinner-border {
-            display: none; /* Initialement caché */
-        }
-        /* Style pour le cadre d'entrée de fichier */
-        .file-input-frame {
-            border: 2px dashed #007bff;
-            padding: 20px;
-            border-radius: 5px;
-            margin-bottom: 20px;
-            text-align: center;
-        }
-        /* Style pour l'icône d'entrée de fichier */
-        .file-input-icon {
-            font-size: 40px;
-            color: #007bff;
-            margin-bottom: 10px;
-        }
-        /* Masquer le texte par défaut d'entrée de fichier */
-        .file-input {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            opacity: 0;
-            cursor: pointer;
-        }
-        /* Style pour afficher le nom du fichier sélectionné */
-        .file-name {
-            margin-top: 10px;
-            font-weight: bold;
-            cursor: pointer;
-        }
-    </style>
 </head>
 <body>
     <header>
@@ -56,6 +22,7 @@
     
     <main>
         <div class="container mt-5">
+            <h3 class="card-title">choisir votre Data</h5>
             <div class="card">
                 <div class="card-body">
                     <h5 class="card-title">Téléchargez votre fichier ici</h5>
@@ -68,7 +35,6 @@
                             <div class="file-name" id="fileNameDisplay">Aucun fichier sélectionné</div>
                         </div>
                         <div class="button-group">
-                            <button id="viewDatasetAndAnalysisBtn" type="submit" class="btn btn-primary">Voir le dataset et l'analyse</button>
                             <div class="spinner-border text-primary" role="status" id="spinner">
                                 <span class="sr-only">Chargement...</span>
                             </div>
@@ -89,38 +55,38 @@
                 </div>
             </div>
 
-            <!-- Formulaire de configuration du modèle -->
+            <!-- Formulaire de configuration du modèle avec les champs désactivés au départ -->
             <h3 class="mt-4">Configuration du Modèle</h3>
             <form id="modelConfigForm">
                 <div class="form-group">
                     <label for="targetColumn">Choisir la colonne cible</label>
-                    <input type="text" class="form-control" id="targetColumn" required>
+                    <select class="form-control" id="targetColumn" required></select>
                 </div>
                 <div class="form-group">
-                    <label for="inputColumns">Choisir les colonnes d'entrée (séparées par des virgules)</label>
-                    <input type="text" class="form-control" id="inputColumns" required>
-                </div>
+                    <label for="inputColumns">Choisir les colonnes d'entrée</label>
+                    <select class="form-control" id="inputColumns" multiple required></select>
+                </div>                
                 <div class="form-group">
                     <label for="problemType">Choisir le type de problème</label>
-                    <select class="form-control" id="problemType">
+                    <select class="form-control" id="problemType" disabled>
                         <option value="regression">Régression</option>
                         <option value="classification">Classification</option>
                     </select>
                 </div>
                 <div class="form-group">
                     <label for="lossFunction">Choisir la fonction de coût</label>
-                    <select class="form-control" id="lossFunction">
+                    <select class="form-control" id="lossFunction" disabled>
                         <option value="mean_squared_error">Erreur quadratique moyenne</option>
                         <option value="cross_entropy">Entropie croisée</option>
                     </select>
                 </div>
                 <div class="form-group">
                     <label for="numEpochs">Nombre d'époques</label>
-                    <input type="number" class="form-control" id="numEpochs" min="1" value="10" required>
+                    <input type="number" class="form-control" id="numEpochs" min="1" value="10" disabled required>
                 </div>
                 <div class="form-group">
                     <label for="numLayers">Nombre de couches dans le modèle</label>
-                    <input type="number" class="form-control" id="numLayers" min="1" value="1" required>
+                    <input type="number" class="form-control" id="numLayers" min="1" value="1" disabled required>
                 </div>
                 <div class="form-group" id="neuronsPerLayerGroup" style="display: none;">
                     <label for="neuronsPerLayer">Nombre de neurones dans chaque couche</label>
@@ -128,14 +94,15 @@
                 </div>
                 <div class="form-group">
                     <label for="activationFunction">Choisir la fonction d'activation</label>
-                    <select class="form-control" id="activationFunction">
+                    <select class="form-control" id="activationFunction" disabled>
                         <option value="relu">ReLU</option>
                         <option value="sigmoid">Sigmoid</option>
                         <option value="tanh">Tanh</option>
                     </select>
                 </div>
-                <button type="submit" class="btn btn-primary">Sauvegarder la configuration</button>
+                <button type="submit" class="btn btn-primary" disabled>Sauvegarder la configuration</button>
             </form>
+
             <div id="configAlertMessage" class="alert mt-3" style="display: none;"></div>
         </div>
     </main>

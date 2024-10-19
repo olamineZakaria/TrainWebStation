@@ -19,3 +19,35 @@
     height: 100%; /* Make the video fill the container */
     object-fit: cover; /* Cover the container, preserving aspect ratio */
 }
+/* Style pour le spinner */
+.spinner-border {
+    display: none; /* Initialement caché */
+}
+/* Style pour le cadre d'entrée de fichier */
+.file-input-frame {
+    border: 2px dashed #007bff;
+    padding: 20px;
+    border-radius: 5px;
+    margin-bottom: 20px;
+    text-align: center;
+}
+/* Style pour l'icône d'entrée de fichier */
+.file-input-icon {
+    font-size: 40px;
+    color: #007bff;
+    margin-bottom: 10px;
+}
+/* Masquer le texte par défaut d'entrée de fichier */
+.file-input {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    cursor: pointer;
+}
+/* Style pour afficher le nom du fichier sélectionné */
+.file-name {
+    margin-top: 10px;
+    font-weight: bold;
+    cursor: pointer;
+}

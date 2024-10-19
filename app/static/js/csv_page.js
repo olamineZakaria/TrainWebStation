@@ -50,19 +50,35 @@ function handleFileUpload(event) {
             document.getElementById('spinner').style.display = 'none';
             document.getElementById('fileNameDisplay').textContent = file.name;
             displayDataInTable(csvData);
+
+            // Activer les champs de configuration après le téléchargement du fichier
+            document.getElementById('targetColumn').disabled = false;
+            document.getElementById('inputColumns').disabled = false;
+            document.getElementById('problemType').disabled = false;
+            document.getElementById('lossFunction').disabled = false;
+            document.getElementById('numEpochs').disabled = false;
+            document.getElementById('numLayers').disabled = false;
+            document.getElementById('activationFunction').disabled = false;
+            document.querySelector('#modelConfigForm button[type="submit"]').disabled = false;
         };
-        
+
         reader.readAsText(file);
     } else {
         showAlert('Veuillez importer un fichier au format CSV, TSV ou XLSX.', 'danger', 'alertMessage');
     }
 }
 
+
 function displayDataInTable(data) {
     const tableHeader = document.getElementById('tableHeader');
     const tableBody = document.getElementById('tableBody');
+    const targetColumnSelect = document.getElementById('targetColumn'); // Pour la colonne cible
+    const inputColumnsSelect = document.getElementById('inputColumns'); // Pour les colonnes d'entrée
+
     tableHeader.innerHTML = '';
     tableBody.innerHTML = '';
+    targetColumnSelect.innerHTML = ''; // Réinitialiser les options
+    inputColumnsSelect.innerHTML = ''; // Réinitialiser les options
 
     const rows = data.split('\n');
     const headers = rows[0].split(',');
@@ -89,7 +105,37 @@ function displayDataInTable(data) {
             tableBody.appendChild(tableRow);
         }
     }
+
+    // Ajouter les colonnes dans le champ de la colonne cible
+    headers.forEach(header => {
+        const option = document.createElement('option');
+        option.value = header.trim();
+        option.textContent = header.trim();
+        targetColumnSelect.appendChild(option);
+    });
+
+    // Quand une colonne cible est sélectionnée, exclure cette colonne des colonnes d'entrée
+    targetColumnSelect.addEventListener('change', function () {
+        const selectedTargetColumn = targetColumnSelect.value;
+
+        // Effacer les colonnes d'entrée
+        inputColumnsSelect.innerHTML = '';
+
+        // Ajouter les colonnes sauf la colonne cible
+        headers.forEach(header => {
+            if (header.trim() !== selectedTargetColumn) {
+                const option = document.createElement('option');
+                option.value = header.trim();
+                option.textContent = header.trim();
+                inputColumnsSelect.appendChild(option);
+            }
+        });
+    });
+
+    // Déclencher l'événement de changement une fois que les colonnes sont initialisées
+    targetColumnSelect.dispatchEvent(new Event('change'));
 }
+
 
 // Gestion de la soumission du formulaire de configuration du modèle
 document.getElementById('modelConfigForm').addEventListener('submit', function(event) {

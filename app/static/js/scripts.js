@@ -111,7 +111,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     const videoContainer = classCard.querySelector(".video-container");
                     videoContainer.style.display = "block"; 
 
-                    // Commencer à capturer les images à 10 FPS
+                    // Commencer à capturer les images à 5 FPS
                     captureInterval = setInterval(() => {
                         const ctx = snapshot.getContext('2d');
                         snapshot.width = webcam.videoWidth; 
@@ -135,7 +135,7 @@ document.addEventListener("DOMContentLoaded", () => {
                         // Mise à jour du compteur d'images
                         imageCountSpan.textContent = classImageData[className].length; 
                         clearImagesBtn.style.display = "block"; // Afficher le bouton de suppression
-                    }, 1000 / 10); // Capture à 10 FPS
+                    }, 1000 / 2); // Capture à 5 FPS
 
                     stopWebcamBtn.addEventListener("click", () => {
                         const tracks = webcam.srcObject.getTracks();

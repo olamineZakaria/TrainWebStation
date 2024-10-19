@@ -6,16 +6,20 @@
     <title>TrainStation</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="shortcut icon" href="{{url_for('static',filename='assets/LOGO-mini.png')}}" type="image/x-icon">
     <!-- Include Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 </head>
 <body>
     <header>
         <nav class="navbar navbar-light bg-light">
-            <div class="container">
-                <div class="logo navbar-brand">TrainStation</div>
+            <div class="container-fluid">
+              <a class="navbar-brand" href="{{ url_for('index') }}">
+                <img src="{{url_for('static',filename='assets/LOGO.png')}}" alt="" height="60" class="d-inline-block align-text-top">
+              </a>
+              
             </div>
-        </nav>
+          </nav>
     </header>
     
     <main class="container mt-4">

@@ -7,6 +7,10 @@
     <link rel="shortcut icon" href="{{url_for('static',filename='assets/LOGO-mini.png')}}" type="image/x-icon">
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/csv.css') }}">
+    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css">
+     
 </head>
 <body>
     <header>
@@ -15,99 +19,244 @@
               <a class="navbar-brand" href="{{ url_for('index') }}">
                 <img src="{{url_for('static',filename='assets/LOGO.png')}}" alt="" height="60" class="d-inline-block align-text-top">
               </a>
+              
             </div>
           </nav>
     </header>
     
     <main>
-        <div class="container mt-5">
-            <h3 class="card-title">Choisir votre Data</h3>
-            <div class="card">
-                <div class="card-body">
+      <div class="container">
+        <div class="row">
+          <div class="col-12">
+            <div class="stepwizard">
+              <div class="stepwizard-row setup-panel">
+                <div class="stepwizard-step">
+                  <a href="#step-1" class="btn btn-circle btn-default btn-primary">1</a>
+                  <div class="clearfix"></div>
+                  <p>File Upload</p>
+                </div>
+                <div class="stepwizard-step">
+                  <a href="#step-2" class="btn btn-default btn-circle" disabled="disabled">2</a>
+                  <div class="clearfix"></div>
+                  <p>View Data</p>
+                </div>
+                <div class="stepwizard-step">
+                  <a href="#step-3" class="btn btn-default btn-circle" disabled="disabled">3</a>
+                  <div class="clearfix"></div>
+                  <p>Model Configuration</p>
+                </div>
+                <div class="stepwizard-step">
+                  <a href="#step-4" class="btn btn-default btn-circle" disabled="disabled">4</a>
+                  <div class="clearfix"></div>
+                  <p>Model Visualisation</p>
+                </div>
+              </div>
+            </div>
+      
+            <form id="uploadForm" class="studentform-section">
+      
+              <!-- Step 1: File Upload -->
+              <div class="setup-content" id="step-1" style="">
+                <div class="row">
+                  <div class="col-12">
+                    <h1 class="display-4 text-center mt-4 mb-5">Téléchargez votre fichier</h1>
+                  </div>
+                  <div class="col-12">
                     <h5 class="card-title">Téléchargez votre fichier ici</h5>
                     <h6 class="card-subtitle mb-2 text-muted">La taille maximale du fichier est de 1 Go</h6>
-                    
-                    <form id="uploadForm">
-                        <div class="file-input-frame">
-                            <i class="fas fa-file-upload file-input-icon"></i>
-                            <input class="file-input" type="file" accept=".csv,.tsv,.xlsx" id="fileID" required>
-                            <div class="file-name" id="fileNameDisplay">Aucun fichier sélectionné</div>
-                        </div>
-                        <div class="button-group">
-                            <div class="spinner-border text-primary" role="status" id="spinner" style="display: none;">
-                                <span class="sr-only">Chargement...</span>
-                            </div>
-                        </div>
-                    </form>
-                    <div id="alertMessage" class="alert mt-3" style="display: none;"></div>
+      
+                    <div class="file-input-frame">
+                      <i class="fas fa-file-upload file-input-icon"></i>
+                      <input class="file-input" type="file" accept=".csv,.tsv,.xlsx" id="fileID" required>
+                      <div class="file-name" id="fileNameDisplay">Aucun fichier sélectionné</div>
+                    </div>
+                    <div class="button-group">
+                      <div class="spinner-border text-primary" role="status" id="spinner" style="">
+                        <span class="sr-only">Chargement...</span>
+                      </div>
+                    </div>
+      
+                    <div id="alertMessage" class="alert mt-3" style=""></div>
+                  </div>
+      
                 </div>
-            </div>
-
-            <div class="mt-4">
-                <div style="max-height: 300px; overflow-y: auto;">
-                    <table class="table table-bordered">
-                        <thead id="tableHeader" style="background-color: #007bff; color: white;"></thead>
+                <button type="button" class="btn btn-primary nextBtn ml-auto">Next</button>
+              </div>
+      
+              <!-- Step 2: View Data -->
+              <div class="setup-content" id="step-2" style="">
+                <div class="row">
+                  <div class="col-12">
+                    <h1 class="display-4 text-center mt-4 mb-5">Voir les données</h1>
+                  </div>
+                  <div class="col-12">
+                    <div style="max-height: 300px; overflow-y: auto;">
+                      <table class="table table-bordered">
+                        <thead id="tableHeader" style="background-color: #f76e24; color: white;"></thead>
                         <tbody id="tableBody"></tbody>
-                    </table>
+                      </table>
+                    </div>
+                  </div>
                 </div>
-            </div>
-
-            <h3 class="mt-4">Configuration du Modèle</h3>
-            <form id="modelConfigForm">
-                <div class="form-group">
-                    <label for="targetColumn">Choisir la colonne cible</label>
-                    <select class="form-control" id="targetColumn" disabled required></select>
+                <button type="button" class="btn btn-secondary prevBtn">Previous</button>
+                <button type="button" class="btn btn-primary nextBtn ml-auto">Next</button>
+              </div>
+      
+              <!-- Step 3: Model Configuration -->
+              <div class="setup-content" id="step-3" style="">
+                <div class="row">
+                  <div class="col-12">
+                    <h1 class="display-4 text-center mt-4 mb-5">Configuration du Modèle</h1>
+                  </div>
+                  <div class="col-12">
+                    <form id="modelConfigForm">
+                      <div class="form-group">
+                        <label for="targetColumn">Choisir la colonne cible</label>
+                        <select class="form-control" id="targetColumn" disabled required></select>
+                      </div>
+                      <div class="form-group">
+                        <label for="inputColumns">Choisir les colonnes d'entrée</label>
+                        <select class="form-control" id="inputColumns" multiple disabled required></select>
+                      </div>
+                      <div class="form-group">
+                        <label for="problemType">Choisir le type de problème</label>
+                        <select class="form-control" id="problemType" disabled>
+                          <option value="regression">Régression</option>
+                          <option value="classification">Classification</option>
+                        </select>
+                      </div>
+                      <div class="form-group">
+                        <label for="lossFunction">Choisir la fonction de coût</label>
+                        <select class="form-control" id="lossFunction" disabled>
+                          <option value="mse">Erreur quadratique moyenne</option>
+                          <option value="cross_entropy">Entropie croisée</option>
+                        </select>
+                      </div>
+                      <div class="form-group">
+                        <label for="numEpochs">Nombre d'époques</label>
+                        <input type="number" class="form-control" id="numEpochs" min="1" value="10" disabled required>
+                      </div>
+                      <div class="form-group">
+                        <label for="numLayers">Nombre de couches dans le modèle</label>
+                        <input type="number" class="form-control" id="numLayers" min="1" value="1" disabled required>
+                      </div>
+                      <div class="form-group" id="neuronsPerLayerGroup" style="">
+                        <label for="neuronsPerLayer">Nombre de neurones dans chaque couche</label>
+                        <div id="neuronsPerLayerContainer"></div>
+                      </div>
+                      <div class="form-group">
+                        <label for="activationFunction">Choisir la fonction d'activation</label>
+                        <select class="form-control" id="activationFunction" disabled>
+                          <option value="relu">ReLU</option>
+                          <option value="sigmoid">Sigmoid</option>
+                          <option value="tanh">Tanh</option>
+                        </select>
+                      </div>
+                      <button type="submit" class="btn btn-primary">Sauvegarder la configuration</button>
+                      <div id="configAlertMessage" class="alert mt-3" style=""></div>
+                    </form>
+                    <div id="configSpinner" class="spinner-border text-primary" role="status" style="">
+                      <span class="sr-only">Chargement...</span>
+                    </div>
+                    <button type="button" class="btn btn-secondary prevBtn">Previous</button>
+                    <button type="button" class="btn btn-primary nextBtn ml-auto">Next</button>
+                    <br><br><br>
+                  </div>
                 </div>
-                <div class="form-group">
-                    <label for="inputColumns">Choisir les colonnes d'entrée</label>
-                    <select class="form-control" id="inputColumns" multiple disabled required></select>
-                </div>                
-                <div class="form-group">
-                    <label for="problemType">Choisir le type de problème</label>
-                    <select class="form-control" id="problemType" disabled>
-                        <option value="regression">Régression</option>
-                        <option value="classification">Classification</option>
-                    </select>
+              </div>
+      
+              <!-- Step 4: Model Visualisation -->
+              <div class="setup-content" id="step-4" style="display: none;">
+                <div class="row">
+                  <div class="col-12">
+                    <h1 class="display-4 text-center mt-4 mb-5">Visualisation de données</h1>
+                  </div>
+                  <div class="col-12">
+                    <div>
+                      <!-- Content for data visualization goes here -->
+                    </div>
+                  </div>
                 </div>
-                <div class="form-group">
-                    <label for="lossFunction">Choisir la fonction de coût</label>
-                    <select class="form-control" id="lossFunction" disabled>
-                        <option value="mse">Erreur quadratique moyenne</option>
-                        <option value="cross_entropy">Entropie croisée</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="numEpochs">Nombre d'époques</label>
-                    <input type="number" class="form-control" id="numEpochs" min="1" value="10" disabled required>
-                </div>
-                <div class="form-group">
-                    <label for="numLayers">Nombre de couches dans le modèle</label>
-                    <input type="number" class="form-control" id="numLayers" min="1" value="1" disabled required>
-                </div>
-                <div class="form-group" id="neuronsPerLayerGroup" style="display: none;">
-                    <label for="neuronsPerLayer">Nombre de neurones dans chaque couche</label>
-                    <div id="neuronsPerLayerContainer"></div>
-                </div>
-                <div class="form-group">
-                    <label for="activationFunction">Choisir la fonction d'activation</label>
-                    <select class="form-control" id="activationFunction" disabled>
-                        <option value="relu">ReLU</option>
-                        <option value="sigmoid">Sigmoid</option>
-                        <option value="tanh">Tanh</option>
-                    </select>
-                </div>
-                <button type="submit" class="btn btn-primary" disabled>Sauvegarder la configuration</button>
-                <div id="configAlertMessage" class="alert mt-3" style="display: none;"></div>
-                <div id="configSpinner" class="spinner-border text-primary" role="status" style="display: none;">
-                    <span class="sr-only">Chargement...</span>
-                </div>
+                <button type="button" class="btn btn-secondary prevBtn">Previous</button>
+              </div>
+      
             </form>
+          </div>
         </div>
+      </div>
+      
+
+       
     </main>
+
+    <!-- <script type="text/javascript" src="{{ url_for('static', filename='js/jquery-3.2.1.min.js') }}"></script> -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+    <!-- <script type="text/javascript" src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}"></script> -->
+
+
 
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script src="{{ url_for('static', filename='js/csv_page.js') }}"></script>
+
+    <script>
+$(document).ready(function () {
+    var currentStep = 1;
+    var totalSteps = 4;
+
+    // Function to show the current step and hide others
+    function showStep(step) {
+        $('.setup-content').hide(); // Hide all steps
+        $('#step-' + step).show(); // Show the current step
+        
+        // Update wizard button states
+        updateStepButtons(step);
+    }
+
+    // Function to update the wizard buttons
+    function updateStepButtons(step) {
+    $('.stepwizard-step a').each(function (index) {
+        var stepIndex = index + 1;
+        
+        // Remove box shadow from all buttons
+        $(this).css('box-shadow', 'none');
+        
+        if (stepIndex < step) {
+            // For steps before the current one, make them active and clickable
+            $(this).removeClass('btn-default').addClass('btn-circle btn-primary').prop('disabled', false);
+        } else if (stepIndex === step) {
+            // For the current step, add the primary class, enable it, and add the box shadow
+            $(this).removeClass('btn-default').addClass('btn-circle btn-primary').prop('disabled', false);
+            $(this).css('box-shadow', '0 0 0px 5px #f76e2499');  // Add box shadow only to the selected button
+        } else {
+            // For steps after the current one, disable them and use the default style
+            $(this).removeClass('btn-primary').addClass('btn-default btn-circle').prop('disabled', true);
+        }
+    });
+}
+
+
+    // Initialize by showing step 1
+    showStep(currentStep);
+
+    // Handle click event for the next button
+    $('.nextBtn').click(function () {
+        if (currentStep < totalSteps) {
+            currentStep++; // Go to the next step
+            showStep(currentStep); // Show the next step
+        }
+    });
+
+    // Optional: Add a previous button handler if needed
+    $('.prevBtn').click(function () {
+        if (currentStep > 1) {
+            currentStep--; // Go to the previous step
+            showStep(currentStep); // Show the previous step
+        }
+    });
+});
+
+    </script>
 </body>
 </html>

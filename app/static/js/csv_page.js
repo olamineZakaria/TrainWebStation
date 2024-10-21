@@ -228,5 +228,11 @@ function showAlert(message, type, elementId) {
     const alertDiv = document.getElementById(elementId);
     alertDiv.textContent = message;
     alertDiv.className = `alert alert-${type} mt-3`;
-    alertDiv.style.display = 'block'; // Afficher l'alerte
+    alertDiv.style.display = 'block'; 
 }
+
+
+
+// toogle 
+
+

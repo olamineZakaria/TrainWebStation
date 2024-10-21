@@ -197,31 +197,6 @@ document.getElementById('modelConfigForm').addEventListener('submit', function(e
 
 
 // Ajout de la logique pour gérer le nombre de couches et de neurones
-document.getElementById('numLayers').addEventListener('change', updateNeuronsPerLayer);
-
-function updateNeuronsPerLayer() {
-    const numLayers = document.getElementById('numLayers').value;
-    const neuronsPerLayerContainer = document.getElementById('neuronsPerLayerContainer');
-    neuronsPerLayerContainer.innerHTML = '';
-
-    for (let i = 0; i < numLayers; i++) {
-        const layerDiv = document.createElement('div');
-        layerDiv.className = 'form-group';
-        const label = document.createElement('label');
-        label.textContent = `Nombre de neurones dans la couche ${i + 1}`;
-        const input = document.createElement('input');
-        input.type = 'number';
-        input.className = 'form-control';
-        input.value = 10; // Valeur par défaut
-        input.min = 1;
-
-        layerDiv.appendChild(label);
-        layerDiv.appendChild(input);
-        neuronsPerLayerContainer.appendChild(layerDiv);
-    }
-
-    document.getElementById('neuronsPerLayerGroup').style.display = 'block';
-}
 
 // Fonction pour afficher les alertes
 function showAlert(message, type, elementId) {

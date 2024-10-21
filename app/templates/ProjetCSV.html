@@ -98,6 +98,7 @@
                     </div>
                   </div>
                 </div>
+                <br><br>
                 <button type="button" class="btn btn-secondary prevBtn">Previous</button>
                 <button type="button" class="btn btn-primary nextBtn ml-auto">Next</button>
               </div>
@@ -256,6 +257,40 @@ $(document).ready(function () {
         }
     });
 });
+
+
+$('#numLayers').on('change', function() {
+    updateNeuronsPerLayer();
+});
+
+function updateNeuronsPerLayer() {
+    const numLayers = $('#numLayers').val();
+    const neuronsPerLayerContainer = $('#neuronsPerLayerContainer');
+
+    // Retrieve the existing values if any
+    const existingValues = neuronsPerLayerContainer.find('input').map(function() {
+        return $(this).val();
+    }).get();
+
+    // Clear the container
+    neuronsPerLayerContainer.empty();
+
+    for (let i = 0; i < numLayers; i++) {
+        const layerDiv = $('<div>').addClass('form-group');
+        const label = $('<label>').text(`Nombre de neurones dans la couche ${i + 1}`);
+        const input = $('<input>')
+            .attr('type', 'number')
+            .addClass('form-control')
+            .val(existingValues[i] || 10) // Set the existing value if it exists, otherwise 10
+            .attr('min', 1);
+
+        layerDiv.append(label).append(input);
+        neuronsPerLayerContainer.append(layerDiv);
+    }
+
+    // Show the container for neurons per layer if it's hidden
+    $('#neuronsPerLayerGroup').show();
+}
 
     </script>
 </body>

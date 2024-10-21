@@ -53,135 +53,131 @@
               </div>
             </div>
       
-            <form id="uploadForm" class="studentform-section">
-      
+            <form id="modelConfigForm" method="post"  enctype="multipart/form-data">
+
               <!-- Step 1: File Upload -->
-              <div class="setup-content" id="step-1" style="">
-                <div class="row">
-                  <div class="col-12">
-                    <h1 class="display-4 text-center mt-4 mb-5">Téléchargez votre fichier</h1>
-                  </div>
-                  <div class="col-12">
-                    <h5 class="card-title">Téléchargez votre fichier ici</h5>
-                    <h6 class="card-subtitle mb-2 text-muted">La taille maximale du fichier est de 1 Go</h6>
-      
-                    <div class="file-input-frame">
-                      <i class="fas fa-file-upload file-input-icon"></i>
-                      <input class="file-input" type="file" accept=".csv,.tsv,.xlsx" id="fileID" required>
-                      <div class="file-name" id="fileNameDisplay">Aucun fichier sélectionné</div>
-                    </div>
-                    <div class="button-group">
-                      <div class="spinner-border text-primary" role="status" id="spinner" style="">
-                        <span class="sr-only">Chargement...</span>
+              <div class="setup-content" id="step-1">
+                  <div class="row">
+                      <div class="col-12">
+                          <h1 class="display-4 text-center mt-4 mb-5">Téléchargez votre fichier</h1>
                       </div>
-                    </div>
-      
-                    <div id="alertMessage" class="alert mt-3" style=""></div>
+                      <div class="col-12">
+                          <h5 class="card-title">Téléchargez votre fichier ici</h5>
+                          <h6 class="card-subtitle mb-2 text-muted">La taille maximale du fichier est de 1 Go</h6>
+                          <div class="file-input-frame">
+                              <i class="fas fa-file-upload file-input-icon"></i>
+                              <input class="file-input" type="file" accept=".csv,.tsv,.xlsx" id="fileID" name="file" required>
+                              <div class="file-name" id="fileNameDisplay">Aucun fichier sélectionné</div>
+                          </div>
+                          <div class="button-group">
+                              <div class="spinner-border text-primary" role="status" id="spinner" style="">
+                                  <span class="sr-only">Chargement...</span>
+                              </div>
+                          </div>
+                          <div id="alertMessage" class="alert mt-3" style=""></div>
+                      </div>
                   </div>
-      
-                </div>
-                <button type="button" class="btn btn-primary nextBtn ml-auto">Next</button>
+                  <button type="button" class="btn btn-primary nextBtn ml-auto">Next</button>
               </div>
-      
+          
               <!-- Step 2: View Data -->
-              <div class="setup-content" id="step-2" style="">
-                <div class="row">
-                  <div class="col-12">
-                    <h1 class="display-4 text-center mt-4 mb-5">Voir les données</h1>
+              <div class="setup-content" id="step-2">
+                  <div class="row">
+                      <div class="col-12">
+                          <h1 class="display-4 text-center mt-4 mb-5">Voir les données</h1>
+                      </div>
+                      <div class="col-12">
+                          <div style="max-height: 300px; overflow-y: auto;">
+                              <table class="table table-bordered">
+                                  <thead id="tableHeader" style="background-color: #f76e24; color: white;"></thead>
+                                  <tbody id="tableBody"></tbody>
+                              </table>
+                          </div>
+                      </div>
                   </div>
-                  <div class="col-12">
-                    <div style="max-height: 300px; overflow-y: auto;">
-                      <table class="table table-bordered">
-                        <thead id="tableHeader" style="background-color: #f76e24; color: white;"></thead>
-                        <tbody id="tableBody"></tbody>
-                      </table>
-                    </div>
-                  </div>
-                </div>
-                <br><br>
-                <button type="button" class="btn btn-secondary prevBtn">Previous</button>
-                <button type="button" class="btn btn-primary nextBtn ml-auto">Next</button>
+                  <br><br>
+                  <button type="button" class="btn btn-secondary prevBtn">Previous</button>
+                  <button type="button" class="btn btn-primary nextBtn ml-auto">Next</button>
               </div>
-      
+          
               <!-- Step 3: Model Configuration -->
-              <div class="setup-content" id="step-3" style="">
-                <div class="row">
-                  <div class="col-12">
-                    <h1 class="display-4 text-center mt-4 mb-5">Configuration du Modèle</h1>
+              <div class="setup-content" id="step-3">
+                  <div class="row">
+                      <div class="col-12">
+                          <h1 class="display-4 text-center mt-4 mb-5">Configuration du Modèle</h1>
+                      </div>
+                      <div class="col-12">
+                          <div class="form-group">
+                              <label for="targetColumn">Choisir la colonne cible</label>
+                              <select class="form-control" id="targetColumn" name="targetColumn" disabled required></select>
+                          </div>
+                          <div class="form-group">
+                              <label for="inputColumns">Choisir les colonnes d'entrée</label>
+                              <select class="form-control" id="inputColumns" name="inputColumns" multiple disabled required></select>
+                          </div>
+                          <div class="form-group">
+                              <label for="problemType">Choisir le type de problème</label>
+                              <select class="form-control" id="problemType" name="problemType" disabled>
+                                  <option value="regression">Régression</option>
+                                  <option value="classification">Classification</option>
+                              </select>
+                          </div>
+                          <div class="form-group">
+                              <label for="lossFunction">Choisir la fonction de coût</label>
+                              <select class="form-control" id="lossFunction" name="lossFunction" disabled>
+                                  <option value="mse">Erreur quadratique moyenne</option>
+                                  <option value="cross_entropy">Entropie croisée</option>
+                              </select>
+                          </div>
+                          <div class="form-group">
+                              <label for="numEpochs">Nombre d'époques</label>
+                              <input type="number" class="form-control" id="numEpochs" min="1" value="10" name="numEpochs" disabled required>
+                          </div>
+                          <div class="form-group">
+                              <label for="numLayers">Nombre de couches dans le modèle</label>
+                              <input type="number" class="form-control" id="numLayers" min="1" value="1" name="numLayers" disabled required>
+                          </div>
+                          <div class="form-group" id="neuronsPerLayerGroup">
+                              <label for="neuronsPerLayer">Nombre de neurones dans chaque couche</label>
+                              <div id="neuronsPerLayerContainer"></div>
+                          </div>
+                          <div class="form-group">
+                              <label for="activationFunction">Choisir la fonction d'activation</label>
+                              <select class="form-control" id="activationFunction" name="activationFunction" disabled>
+                                  <option value="relu">ReLU</option>
+                                  <option value="sigmoid">Sigmoid</option>
+                                  <option value="tanh">Tanh</option>
+                              </select>
+                          </div>
+                          <button type="submit" class="btn btn-primary">Sauvegarder la configuration</button>
+                          <div id="configAlertMessage" class="alert mt-3" style=""></div>
+                          <div id="configSpinner" class="spinner-border text-primary" role="status" style="">
+                              <span class="sr-only">Chargement...</span>
+                          </div>
+                          <button type="button" class="btn btn-secondary prevBtn">Previous</button>
+                          <button type="button" class="btn btn-primary nextBtn ml-auto">Next</button>
+                          <br><br><br>
+                      </div>
                   </div>
-                  <div class="col-12">
-                    <form id="modelConfigForm">
-                      <div class="form-group">
-                        <label for="targetColumn">Choisir la colonne cible</label>
-                        <select class="form-control" id="targetColumn" disabled required></select>
-                      </div>
-                      <div class="form-group">
-                        <label for="inputColumns">Choisir les colonnes d'entrée</label>
-                        <select class="form-control" id="inputColumns" multiple disabled required></select>
-                      </div>
-                      <div class="form-group">
-                        <label for="problemType">Choisir le type de problème</label>
-                        <select class="form-control" id="problemType" disabled>
-                          <option value="regression">Régression</option>
-                          <option value="classification">Classification</option>
-                        </select>
-                      </div>
-                      <div class="form-group">
-                        <label for="lossFunction">Choisir la fonction de coût</label>
-                        <select class="form-control" id="lossFunction" disabled>
-                          <option value="mse">Erreur quadratique moyenne</option>
-                          <option value="cross_entropy">Entropie croisée</option>
-                        </select>
-                      </div>
-                      <div class="form-group">
-                        <label for="numEpochs">Nombre d'époques</label>
-                        <input type="number" class="form-control" id="numEpochs" min="1" value="10" disabled required>
-                      </div>
-                      <div class="form-group">
-                        <label for="numLayers">Nombre de couches dans le modèle</label>
-                        <input type="number" class="form-control" id="numLayers" min="1" value="1" disabled required>
-                      </div>
-                      <div class="form-group" id="neuronsPerLayerGroup" style="">
-                        <label for="neuronsPerLayer">Nombre de neurones dans chaque couche</label>
-                        <div id="neuronsPerLayerContainer"></div>
-                      </div>
-                      <div class="form-group">
-                        <label for="activationFunction">Choisir la fonction d'activation</label>
-                        <select class="form-control" id="activationFunction" disabled>
-                          <option value="relu">ReLU</option>
-                          <option value="sigmoid">Sigmoid</option>
-                          <option value="tanh">Tanh</option>
-                        </select>
-                      </div>
-                      <button type="submit" class="btn btn-primary">Sauvegarder la configuration</button>
-                      <div id="configAlertMessage" class="alert mt-3" style=""></div>
-                    </form>
-                    <div id="configSpinner" class="spinner-border text-primary" role="status" style="">
-                      <span class="sr-only">Chargement...</span>
-                    </div>
-                    <button type="button" class="btn btn-secondary prevBtn">Previous</button>
-                    <button type="button" class="btn btn-primary nextBtn ml-auto">Next</button>
-                    <br><br><br>
-                  </div>
-                </div>
               </div>
-      
+          
               <!-- Step 4: Model Visualisation -->
               <div class="setup-content" id="step-4" style="display: none;">
-                <div class="row">
-                  <div class="col-12">
-                    <h1 class="display-4 text-center mt-4 mb-5">Visualisation de données</h1>
+                  <div class="row">
+                      <div class="col-12">
+                          <h1 class="display-4 text-center mt-4 mb-5">Visualisation de données</h1>
+                      </div>
+                      <div class="col-12">
+                          <div>
+                              <!-- Content for data visualization goes here -->
+                          </div>
+                      </div>
                   </div>
-                  <div class="col-12">
-                    <div>
-                      <!-- Content for data visualization goes here -->
-                    </div>
-                  </div>
-                </div>
-                <button type="button" class="btn btn-secondary prevBtn">Previous</button>
+                  <button type="button" class="btn btn-secondary prevBtn">Previous</button>
               </div>
-      
-            </form>
+          
+          </form>
+          
           </div>
         </div>
       </div>
@@ -201,7 +197,7 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script src="{{ url_for('static', filename='js/csv_page.js') }}"></script>
 
-    <script>
+<script>
 $(document).ready(function () {
     var currentStep = 1;
     var totalSteps = 4;
@@ -291,6 +287,31 @@ function updateNeuronsPerLayer() {
     // Show the container for neurons per layer if it's hidden
     $('#neuronsPerLayerGroup').show();
 }
+
+
+$(document).ready(function() {
+    $('#modelConfigForm').on('submit', function(event) {
+        event.preventDefault();  // Prevent the default form submission
+
+        var formData = new FormData(this);  // Create FormData object
+
+        $.ajax({
+            url: "{{ url_for('save_config') }}",  // URL for the Flask route
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function(response) {
+                // Show success message
+                alert(response.message);  // You can also replace this with a more user-friendly display
+            },
+            error: function(jqXHR) {
+                // Show error message
+                alert(jqXHR.responseJSON.error || 'An error occurred.');
+            }
+        });
+    });
+});
 
     </script>
 </body>

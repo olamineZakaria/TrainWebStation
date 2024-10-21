@@ -1,7 +1,7 @@
 let uploadedFile = null; // Variable pour stocker le fichier téléchargé
 
 document.getElementById('fileID').addEventListener('change', handleFileUpload);
-document.getElementById('uploadForm').addEventListener('submit', function(event) {
+document.getElementById('uploadForm-data').addEventListener('submit', function(event) {
     event.preventDefault();
     if (!uploadedFile) {
         showAlert('Veuillez importer un fichier avant de soumettre.', 'danger', 'alertMessage');
@@ -140,60 +140,7 @@ function displayDataInTable(data) {
 
 // Gestion de la soumission du formulaire de configuration du modèle
 // Gestion de la soumission du formulaire de configuration du modèle
-document.getElementById('modelConfigForm').addEventListener('submit', function(event) {
-    event.preventDefault(); // Empêcher le rechargement de la page
 
-    const configData = {
-        targetColumn: document.getElementById('targetColumn').value,
-        inputColumns: document.getElementById('inputColumns').value.split(',').map(col => col.trim()),
-        problemType: document.getElementById('problemType').value,
-        lossFunction: document.getElementById('lossFunction').value,
-        numEpochs: document.getElementById('numEpochs').value,
-        numLayers: document.getElementById('numLayers').value,
-        neuronsPerLayer: Array.from(document.querySelectorAll('#neuronsPerLayerContainer input')).map(input => input.value),
-        activationFunction: document.getElementById('activationFunction').value
-    };
-
-    // Afficher le spinner lors de la sauvegarde
-    const configSpinner = document.getElementById('configSpinner');
-    configSpinner.style.display = 'inline-block';
-
-    // Envoi des données au serveur
-    fetch('/save_config', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(configData)
-    })
-    .then(response => response.json())
-    .then(data => {
-        // Retirer le spinner après la réponse
-        configSpinner.style.display = 'none';
-
-        const configAlertMessage = document.getElementById('configAlertMessage');
-        if (data.success) {
-            configAlertMessage.textContent = 'Configuration sauvegardée avec succès!';
-            configAlertMessage.classList.remove('alert-danger');
-            configAlertMessage.classList.add('alert-success');
-        } else {
-            configAlertMessage.textContent = 'Erreur lors de la sauvegarde de la configuration.';
-            configAlertMessage.classList.remove('alert-success');
-            configAlertMessage.classList.add('alert-danger');
-        }
-        configAlertMessage.style.display = 'block';
-    })
-    .catch(error => {
-        console.error('Erreur:', error);
-        // Retirer le spinner en cas d'erreur
-        configSpinner.style.display = 'none';
-        const configAlertMessage = document.getElementById('configAlertMessage');
-        configAlertMessage.textContent = 'Erreur lors de la sauvegarde de la configuration.';
-        configAlertMessage.classList.remove('alert-success');
-        configAlertMessage.classList.add('alert-danger');
-        configAlertMessage.style.display = 'block';
-    });
-});
 
 
 // Ajout de la logique pour gérer le nombre de couches et de neurones

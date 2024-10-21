@@ -278,7 +278,8 @@ function updateNeuronsPerLayer() {
             .attr('type', 'number')
             .addClass('form-control')
             .val(existingValues[i] || 10) // Set the existing value if it exists, otherwise 10
-            .attr('min', 1);
+            .attr('min', 1)
+            .attr('name', 'neuronsPerLayer[]'); // Set the name for form submission
 
         layerDiv.append(label).append(input);
         neuronsPerLayerContainer.append(layerDiv);
@@ -287,6 +288,7 @@ function updateNeuronsPerLayer() {
     // Show the container for neurons per layer if it's hidden
     $('#neuronsPerLayerGroup').show();
 }
+
 
 
 $(document).ready(function() {

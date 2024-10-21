@@ -57,7 +57,7 @@ def save_config():
         'lossFunction': request.form['lossFunction'],
         'numEpochs': request.form['numEpochs'],
         'numLayers': request.form['numLayers'],
-        'neuronsPerLayer': request.form.getlist('neuronsPerLayer[]'),
+        'neuronsPerLayer': request.form.getlist('neuronsPerLayer[]'),  # Adjusted here
         'activationFunction': request.form['activationFunction']
     }
 
@@ -66,13 +66,14 @@ def save_config():
         f.write(f"Colonne cible: {config_data['targetColumn']}\n")
         f.write(f"Colonnes d'entree: {', '.join(config_data['inputColumns'])}\n")
         f.write(f"Type de problème: {config_data['problemType']}\n")
-        f.write(f"Fonction de coût: {config_data['lossFunction']}\n")
+        f.write(f"Fonction de cout: {config_data['lossFunction']}\n")
         f.write(f"Nombre d'epoques: {config_data['numEpochs']}\n")
         f.write(f"Nombre de couches: {config_data['numLayers']}\n")
         f.write(f"Neurones par couche: {', '.join(map(str, config_data['neuronsPerLayer']))}\n")
         f.write(f"Fonction d'activation: {config_data['activationFunction']}\n")
 
     return jsonify({'message': 'Configuration sauvegardee avec succès.'}), 200
+
 
 
 if __name__ == '__main__':

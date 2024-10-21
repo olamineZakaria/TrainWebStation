@@ -1,0 +1,8 @@
+Colonne cible: label
+Colonnes d'entrée: file_path
+Type de problème: regression
+Fonction de coût: mse
+Nombre d'époques: 10
+Nombre de couches: 4
+Neurones par couche: 4, 11, 12, 7
+Fonction d'activation: relu

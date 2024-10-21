@@ -9,6 +9,19 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <!-- Include Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        .image-preview-container {
+            max-height: 100px; 
+            overflow-y: auto; /* Permettre le défilement vertical */
+            display: flex; /* Flex pour aligner les images */
+            flex-wrap: nowrap; /* Pas de retour à la ligne */
+        }
+        .image-preview-container img {
+            width: 50px; /* Taille réduite */
+            height: 50px; /* Taille réduite */
+            margin: 5px; /* Marge entre les images */
+        }
+    </style>
 </head>
 <body>
     <header>
@@ -17,9 +30,8 @@
               <a class="navbar-brand" href="{{ url_for('index') }}">
                 <img src="{{url_for('static',filename='assets/LOGO.png')}}" alt="" height="60" class="d-inline-block align-text-top">
               </a>
-              
             </div>
-          </nav>
+        </nav>
     </header>
 
     <main class="container mt-4">
@@ -39,9 +51,8 @@
                                 <button class="btn btn-primary file-upload-btn"><i class="fas fa-upload"></i> Importer</button>
                                 <button class="btn btn-secondary webcam-btn"><i class="fas fa-video"></i> Webcam</button>
                             </div>
-                            <div class="image-preview-container" style="max-height: 100px; overflow: auto;"></div>
+                            <div class="image-preview-container"></div>
                             <p class="image-count">Nombre d'images: <span class="count">0</span></p>
-                            <!-- Video container for responsive webcam -->
                             <div class="video-container" style="display: none;">
                                 <video class="webcam" autoplay playsinline></video>
                             </div>                            
@@ -66,9 +77,8 @@
                                 <button class="btn btn-primary file-upload-btn"><i class="fas fa-upload"></i> Importer</button>
                                 <button class="btn btn-secondary webcam-btn"><i class="fas fa-video"></i> Webcam</button>
                             </div>
-                            <div class="image-preview-container" style="max-height: 100px; overflow: auto;"></div>
+                            <div class="image-preview-container"></div>
                             <p class="image-count">Nombre d'images: <span class="count">0</span></p>
-                            <!-- Video container for responsive webcam -->
                             <div class="video-container" style="display: none;">
                                 <video class="webcam" autoplay playsinline></video>
                             </div>                       
@@ -79,7 +89,6 @@
                     </div>
                 </div>
             </div>
-            <!-- Button for adding a new class at the bottom -->
             <button id="add-class-btn" class="btn btn-success">+ Ajouter une classe</button>
         </div>
     </main>
@@ -90,11 +99,9 @@
         </select>
     </footer>
 
-    <!-- Include Bootstrap JS and dependencies -->
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    <!-- Inclusion du fichier JavaScript -->
     <script src="{{ url_for('static', filename='js/scripts.js') }}"></script>
 </body>
 </html>

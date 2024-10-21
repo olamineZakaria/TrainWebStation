@@ -15,14 +15,13 @@
               <a class="navbar-brand" href="{{ url_for('index') }}">
                 <img src="{{url_for('static',filename='assets/LOGO.png')}}" alt="" height="60" class="d-inline-block align-text-top">
               </a>
-              
             </div>
           </nav>
     </header>
     
     <main>
         <div class="container mt-5">
-            <h3 class="card-title">choisir votre Data</h5>
+            <h3 class="card-title">Choisir votre Data</h3>
             <div class="card">
                 <div class="card-body">
                     <h5 class="card-title">Téléchargez votre fichier ici</h5>
@@ -35,12 +34,11 @@
                             <div class="file-name" id="fileNameDisplay">Aucun fichier sélectionné</div>
                         </div>
                         <div class="button-group">
-                            <div class="spinner-border text-primary" role="status" id="spinner">
+                            <div class="spinner-border text-primary" role="status" id="spinner" style="display: none;">
                                 <span class="sr-only">Chargement...</span>
                             </div>
                         </div>
                     </form>
-                    <!-- Alertes pour les messages d'erreur/success -->
                     <div id="alertMessage" class="alert mt-3" style="display: none;"></div>
                 </div>
             </div>
@@ -54,7 +52,6 @@
                 </div>
             </div>
 
-            <!-- Formulaire de configuration du modèle avec les champs désactivés au départ -->
             <h3 class="mt-4">Configuration du Modèle</h3>
             <form id="modelConfigForm">
                 <div class="form-group">
@@ -101,14 +98,10 @@
                 </div>
                 <button type="submit" class="btn btn-primary" disabled>Sauvegarder la configuration</button>
                 <div id="configAlertMessage" class="alert mt-3" style="display: none;"></div>
-    
-            <!-- Spinner pour la sauvegarde -->
-            <div id="configSpinner" class="spinner-border text-primary" role="status" style="display: none;">
-                <span class="sr-only">Chargement...</span>
-            </div>
+                <div id="configSpinner" class="spinner-border text-primary" role="status" style="display: none;">
+                    <span class="sr-only">Chargement...</span>
+                </div>
             </form>
-            
-            
         </div>
     </main>
 

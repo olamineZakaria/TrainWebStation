@@ -5,7 +5,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // Variable pour stocker les images en session
     let classImageData = {};
 
-    // Appliquez les fonctionnalités aux classes déjà existantes
+    // Appliquer les fonctionnalités aux classes déjà existantes
     const existingClassCards = document.querySelectorAll(".class-card");
     existingClassCards.forEach((classCard, index) => {
         setupClassCard(classCard, `Class ${index + 1}`);

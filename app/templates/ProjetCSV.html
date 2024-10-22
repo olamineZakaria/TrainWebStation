@@ -151,9 +151,9 @@
                           </div>
                           <br><br>
                           <button type="submit" class="btn btn-primary">Sauvegarder la configuration</button>&nbsp;&nbsp;
-                          <button type="button" class="btn btn-primary" onclick="trainModel()">Train model</button>
+                          <button type="button" class="btn btn-primary" id="trainModelButton" onclick="trainModel()" disabled>Train model</button>
                           <div id="configAlertMessage" class="alert mt-3" style=""></div>
-                          <div id="configSpinner" class="spinner-border text-primary" role="status" style="">
+                          <div id="configSpinner" class="spinner-border text-primary" role="status" style="display:none;">
                               <span class="sr-only">Chargement...</span>
                           </div>
                           <div id="alertMessage1" class="alert mt-3" style=""></div>
@@ -263,24 +263,57 @@ $('#numLayers').on('change', function() {
     updateNeuronsPerLayer();
 });
 function trainModel() {
-        // Appel AJAX pour envoyer la requête vers Flask
-        fetch('/train_model', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ action: 'train_model' })
-        })
-        .then(response => response.json())
-        .then(data => {
-            console.log(data.message); // Log de la réponse du serveur
-            alert('Modèle entraîné avec succès');
-        })
-        .catch(error => {
-            console.error('Erreur:', error);
-            alert('Erreur lors de l\'entraînement du modèle');
-        });
-    }
+    // Disable the Train Model button while training is in progress
+    $('#trainModelButton').attr('disabled', true);
+
+    // Show the spinner during training
+    $('#configSpinner').show();
+
+    // Hide any previous alert messages
+    $('#alertMessage1').hide();
+
+    // Appel AJAX pour envoyer la requête vers Flask
+    fetch('/train_model', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ action: 'train_model' })
+    })
+    .then(response => {
+        if (!response.ok) {
+            // If there is a server error, throw the response to catch the error below
+            return response.json().then(errorData => {
+                throw new Error(errorData.error);
+            });
+        }
+        return response.json();  // Parse the JSON if request was successful
+    })
+    .then(data => {
+        console.log(data.message); // Log de la réponse du serveur
+        
+        // Show success message
+        showAlert(data.message, 'success', 'alertMessage1');
+        
+        // Re-enable the Train Model button after training completes
+        $('#trainModelButton').attr('disabled', false);
+
+        // Hide the spinner after training is complete
+        $('#configSpinner').hide();
+    })
+    .catch(error => {
+        // Show error message
+        showAlert(error.message, 'danger', 'alertMessage1');
+        
+        // Re-enable the Train Model button even if there's an error
+        $('#trainModelButton').attr('disabled', false);
+
+        // Hide the spinner in case of an error
+        $('#configSpinner').hide();
+    });
+}
+
+
 function updateNeuronsPerLayer() {
     const numLayers = $('#numLayers').val();
     const neuronsPerLayerContainer = $('#neuronsPerLayerContainer');
@@ -319,12 +352,15 @@ function showAlert(message, type, elementId) {
     alertDiv.style.display = 'block'; 
 }
 
-
 $(document).ready(function() {
     $('#modelConfigForm').on('submit', function(event) {
         event.preventDefault();  // Prevent the default form submission
 
         var formData = new FormData(this);  // Create FormData object
+
+        // Disable the Train Model button while saving the configuration
+        $('#trainModelButton').attr('disabled', true);
+        $('#configSpinner').show();  // Show spinner during save process
 
         $.ajax({
             url: "{{ url_for('save_config') }}",  // URL for the Flask route
@@ -333,15 +369,25 @@ $(document).ready(function() {
             processData: false,
             contentType: false,
             success: function(response) {
-                      showAlert(response.message, 'success', 'alertMessage1'); 
-                    },
-                    error: function(jqXHR) {
-                      showAlert(jqXHR.responseJSON.error || 'An error occurred.', 'danger', 'alertMessage1'); 
-                       
-                    }
+                // Hide spinner and show success alert
+                $('#configSpinner').hide();
+                showAlert(response.message, 'success', 'alertMessage1'); 
+                
+                // Enable the Train Model button now that configuration is saved
+                $('#trainModelButton').attr('disabled', false);
+            },
+            error: function(jqXHR) {
+                // Hide spinner and show error alert
+                $('#configSpinner').hide();
+                showAlert(jqXHR.responseJSON.error || 'An error occurred.', 'danger', 'alertMessage1'); 
+                
+                // Keep the Train Model button disabled if saving fails
+                $('#trainModelButton').attr('disabled', true);
+            }
         });
     });
 });
+
 
     </script>
 </body>

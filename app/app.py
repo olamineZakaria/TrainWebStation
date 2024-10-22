@@ -65,7 +65,7 @@ def save_config():
 
     # Write configuration to a file
     with open('model_config.txt', 'w') as f:
-        f.write(f"Fichier Data : {config_data["filePath"]}\n")
+        f.write(f"Fichier Data : {config_data['filePath']}\n")
         f.write(f"Colonne cible: {config_data['targetColumn']}\n")
         f.write(f"Colonnes d'entree: {', '.join(config_data['inputColumns'])}\n")
         f.write(f"Type de probleme: {config_data['problemType']}\n")
@@ -85,12 +85,10 @@ def train_model():
         model.train_model()
         model.evaluate_model()
         model.plot_learning_curve()
-        return "Modèle entraîné avec succès", 200
+        return jsonify({'message': "Modèle entraîné avec succès"}), 200  # Return valid JSON response
     except Exception as e:
         print(f"Erreur lors de l'entraînement du modèle : {e}")
-        return str(e), 500
-
-
+        return jsonify({'error': str(e)}), 400  # Return error in JSON format
 
 if __name__ == '__main__':
     app.run(debug=True)

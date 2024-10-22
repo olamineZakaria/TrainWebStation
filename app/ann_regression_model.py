@@ -5,7 +5,8 @@ import matplotlib.pyplot as plt
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler, OneHotEncoder
 from sklearn.compose import ColumnTransformer
-
+import os
+import matplotlib
 
 class ANNRegressionModel:
     def __init__(self, config_file):
@@ -110,8 +111,13 @@ class ANNRegressionModel:
         loss = self.model.evaluate(self.X_test, self.y_test)
         print(f'Perte sur l\'ensemble de test : {loss}')
 
+    matplotlib.use('Agg')
     def plot_learning_curve(self):
-        # Afficher les courbes d'apprentissage
+        # Create the 'plots' directory if it doesn't exist
+        if not os.path.exists('plots'):
+            os.makedirs('plots')
+
+        # Plot the learning curves
         plt.figure(figsize=(12, 6))
         plt.plot(self.history.history['loss'], label='Perte d\'entraînement')
         plt.plot(self.history.history['val_loss'], label='Perte de validation')
@@ -119,7 +125,13 @@ class ANNRegressionModel:
         plt.xlabel('Époques')
         plt.ylabel('Perte')
         plt.legend()
-        plt.show()
+
+        # Save the plot in the 'plots' directory
+        plot_path = os.path.join('plots', 'learning_curve.png')
+        plt.savefig(plot_path)
+
+        # Optionally clear the plot to free up memory
+        plt.clf()
 
     def print_model_summary(self):
         # Afficher le résumé du modèle

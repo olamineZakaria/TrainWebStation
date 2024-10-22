@@ -1,8 +1,9 @@
-Colonne cible: BREAD
-Colonnes d'entree: "MILK, BISCUIT"
+Fichier Data : uploads\Customer Purchasing Behaviors.csv
+Colonne cible: loyalty_score
+Colonnes d'entree: annual_income, purchase_amount
 Type de probleme: regression
 Fonction de cout: mse
-Nombre d'epoques: 10
+Nombre d'epoques: 16
 Nombre de couches: 1
-Neurones par couche: 
+Neurones par couche: 12
 Fonction d'activation: relu

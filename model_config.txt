@@ -1,8 +1,8 @@
-Colonne cible: label
-Colonnes d'entree: file_path
+Colonne cible: BREAD
+Colonnes d'entree: "MILK, BISCUIT"
 Type de probleme: regression
 Fonction de cout: mse
-Nombre d'epoques: 20
-Nombre de couches: 2
-Neurones par couche: 21, 14
-Fonction d'activation: sigmoid
+Nombre d'epoques: 10
+Nombre de couches: 1
+Neurones par couche: 
+Fonction d'activation: relu

@@ -113,10 +113,9 @@ class ANNRegressionModel:
 
     matplotlib.use('Agg')
     def plot_learning_curve(self):
-        # Create the 'plots' directory if it doesn't exist
-        if not os.path.exists('plots'):
-            os.makedirs('plots')
-
+        # Create the 'assets/plots' directory if it doesn't exist
+        plots_dir = os.path.join('app','static', 'assets', 'plots')
+        os.makedirs(plots_dir, exist_ok=True)
         # Plot the learning curves
         plt.figure(figsize=(12, 6))
         plt.plot(self.history.history['loss'], label='Perte d\'entraînement')
@@ -126,8 +125,8 @@ class ANNRegressionModel:
         plt.ylabel('Perte')
         plt.legend()
 
-        # Save the plot in the 'plots' directory
-        plot_path = os.path.join('plots', 'learning_curve.png')
+        # Save the plot in the 'assets/plots' directory
+        plot_path = os.path.join(plots_dir, 'learning_curve.png')
         plt.savefig(plot_path)
 
         # Optionally clear the plot to free up memory

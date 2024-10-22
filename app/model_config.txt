@@ -1,9 +1,0 @@
-Fichier Data : uploads\Linear Regression - Sheet1.csv
-Colonne cible: Y
-Colonnes d'entree: X
-Type de probleme: regression
-Fonction de cout: mse
-Nombre d'epoques: 300
-Nombre de couches: 1
-Neurones par couche: 10
-Fonction d'activation: relu

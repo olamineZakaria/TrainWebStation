@@ -167,18 +167,18 @@
           
               <!-- Step 4: Model Visualisation -->
               <div class="setup-content" id="step-4" style="display: none;">
-                  <div class="row">
-                      <div class="col-12">
-                          <h1 class="display-4 text-center mt-4 mb-5">Visualisation de données</h1>
-                      </div>
-                      <div class="col-12">
-                          <div>
-                              <!-- Content for data visualization goes here -->
-                          </div>
-                      </div>
-                  </div>
-                  <button type="button" class="btn btn-secondary prevBtn">Previous</button>
-              </div>
+                <div class="row">
+                    <div class="col-12">
+                        <h1 class="display-4 text-center mt-4 mb-5">Visualisation de données</h1>
+                    </div>
+                    <div class="col-12">
+                        <div>
+                            <img id="plotImage" src="{{url_for('static',filename='assets/plots/learning_curve.png')}}" alt="Plot Image" class="img-fluid" style="max-width: 100%; height: auto;" />
+                        </div>
+                    </div>
+                </div>
+                <button type="button" class="btn btn-secondary prevBtn">Previous</button>
+            </div>
           
           </form>
           
@@ -300,6 +300,11 @@ function trainModel() {
 
         // Hide the spinner after training is complete
         $('#configSpinner').hide();
+
+        // Refresh the plot image by updating its src attribute with a timestamp to avoid caching
+        const plotImage = document.getElementById('plotImage');
+        plotImage.src = plotImage.src.split('?')[0] + '?' + new Date().getTime();  // Adding timestamp
+
     })
     .catch(error => {
         // Show error message
@@ -312,6 +317,7 @@ function trainModel() {
         $('#configSpinner').hide();
     });
 }
+
 
 
 function updateNeuronsPerLayer() {

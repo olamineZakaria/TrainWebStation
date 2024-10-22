@@ -1,0 +1,9 @@
+Fichier Data : uploads\insurance.csv
+Colonne cible: charges
+Colonnes d'entree: age, sex, bmi, children, smoker, region
+Type de probleme: regression
+Fonction de cout: mse
+Nombre d'epoques: 10
+Nombre de couches: 1
+Neurones par couche: 
+Fonction d'activation: relu

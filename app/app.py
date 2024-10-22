@@ -51,6 +51,7 @@ def save_config():
         file.save(file_path)
 
     config_data = {
+        'filePath': file_path,
         'targetColumn': request.form['targetColumn'],
         'inputColumns': request.form.getlist('inputColumns'),
         'problemType': request.form['problemType'],
@@ -63,6 +64,7 @@ def save_config():
 
     # Write configuration to a file
     with open('model_config.txt', 'w') as f:
+        f.write(f"Fichier Data : {config_data["filePath"]}\n")
         f.write(f"Colonne cible: {config_data['targetColumn']}\n")
         f.write(f"Colonnes d'entree: {', '.join(config_data['inputColumns'])}\n")
         f.write(f"Type de probleme: {config_data['problemType']}\n")

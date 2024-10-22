@@ -151,7 +151,7 @@
                           </div>
                           <br><br>
                           <button type="submit" class="btn btn-primary">Sauvegarder la configuration</button>&nbsp;&nbsp;
-                          <button type="button" class="btn btn-primary">Train model</button>
+                          <button type="button" class="btn btn-primary" onclick="trainModel()">Train model</button>
                           <div id="configAlertMessage" class="alert mt-3" style=""></div>
                           <div id="configSpinner" class="spinner-border text-primary" role="status" style="">
                               <span class="sr-only">Chargement...</span>
@@ -262,7 +262,25 @@ $(document).ready(function () {
 $('#numLayers').on('change', function() {
     updateNeuronsPerLayer();
 });
-
+function trainModel() {
+        // Appel AJAX pour envoyer la requête vers Flask
+        fetch('/train_model', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ action: 'train_model' })
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log(data.message); // Log de la réponse du serveur
+            alert('Modèle entraîné avec succès');
+        })
+        .catch(error => {
+            console.error('Erreur:', error);
+            alert('Erreur lors de l\'entraînement du modèle');
+        });
+    }
 function updateNeuronsPerLayer() {
     const numLayers = $('#numLayers').val();
     const neuronsPerLayerContainer = $('#neuronsPerLayerContainer');

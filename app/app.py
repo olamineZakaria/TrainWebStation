@@ -1,5 +1,6 @@
 from flask import Flask, render_template, redirect, url_for, session ,request, jsonify
 import os
+from ann_regression_model import ANNRegressionModel
 app = Flask(__name__)
 # app.secret_key = 'your_secret_key'  # Cle secrète pour les sessions
 
@@ -75,6 +76,19 @@ def save_config():
         f.write(f"Fonction d'activation: {config_data['activationFunction']}\n")
 
     return jsonify({'message': 'Configuration sauvegardee avec succès.'}), 200
+@app.route('/train_model', methods=['POST'])
+def train_model():
+    try:
+        model = ANNRegressionModel('model_config.txt')  # Changez 'config.txt' par le bon fichier
+        model.load_data()
+        model.build_model()
+        model.train_model()
+        model.evaluate_model()
+        model.plot_learning_curve()
+        return "Modèle entraîné avec succès", 200
+    except Exception as e:
+        print(f"Erreur lors de l'entraînement du modèle : {e}")
+        return str(e), 500
 
 
 

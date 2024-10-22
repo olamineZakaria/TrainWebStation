@@ -1,4 +1,11 @@
 
+.btn-primary{
+    background-color: #f76e24;
+    border: none;
+}
+.btn-primary:hover{
+    background-color: #f78b50;
+}
 .navbar{
     background: #f76e24;
   }
@@ -12,6 +19,7 @@
   .dropdown-item{
     color: #f76e24;
   }
+
   .dropdown-item:hover{
     background: #f76e24;
      color: #FFF;
@@ -159,6 +167,8 @@
       color: #000;
       position: absolute;
       top: 0;
+      pointer-events: none;
+      
   }
   .stepwizard-step a.btn-primary{
       background: #f76e24;

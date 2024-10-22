@@ -154,6 +154,8 @@
                           <div id="configSpinner" class="spinner-border text-primary" role="status" style="">
                               <span class="sr-only">Chargement...</span>
                           </div>
+                          <div id="alertMessage1" class="alert mt-3" style=""></div>
+                          <br>
                           <button type="button" class="btn btn-secondary prevBtn">Previous</button>
                           <button type="button" class="btn btn-primary nextBtn ml-auto">Next</button>
                           <br><br><br>
@@ -185,7 +187,7 @@
 
        
     </main>
-
+    
     <!-- <script type="text/javascript" src="{{ url_for('static', filename='js/jquery-3.2.1.min.js') }}"></script> -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
     <!-- <script type="text/javascript" src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}"></script> -->
@@ -289,6 +291,13 @@ function updateNeuronsPerLayer() {
     $('#neuronsPerLayerGroup').show();
 }
 
+function showAlert(message, type, elementId) {
+    console.log('Showing alert:', message, 'Type:', type);  // Debugging line
+    const alertDiv = document.getElementById(elementId);
+    alertDiv.textContent = message;
+    alertDiv.className = `alert alert-${type} mt-3`;
+    alertDiv.style.display = 'block'; 
+}
 
 
 $(document).ready(function() {
@@ -304,13 +313,12 @@ $(document).ready(function() {
             processData: false,
             contentType: false,
             success: function(response) {
-                // Show success message
-                alert(response.message);  // You can also replace this with a more user-friendly display
-            },
-            error: function(jqXHR) {
-                // Show error message
-                alert(jqXHR.responseJSON.error || 'An error occurred.');
-            }
+                      showAlert(response.message, 'success', 'alertMessage1'); 
+                    },
+                    error: function(jqXHR) {
+                      showAlert(jqXHR.responseJSON.error || 'An error occurred.', 'danger', 'alertMessage1'); 
+                       
+                    }
         });
     });
 });

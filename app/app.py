@@ -34,8 +34,8 @@ def projet_csv():
 #         file_path = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
 #         file.save(file_path)
 #         return jsonify({'url': file_path})  # Retourner l'URL du fichier uploade
-app.config['UPLOAD_FOLDER'] = 'uploads'  # Ensure this folder exists
-os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)  # Create the upload folder if it doesn't exist
+
+
 
 @app.route('/save_config', methods=['POST'])
 def save_config():
@@ -65,7 +65,7 @@ def save_config():
     with open('model_config.txt', 'w') as f:
         f.write(f"Colonne cible: {config_data['targetColumn']}\n")
         f.write(f"Colonnes d'entree: {', '.join(config_data['inputColumns'])}\n")
-        f.write(f"Type de problème: {config_data['problemType']}\n")
+        f.write(f"Type de probleme: {config_data['problemType']}\n")
         f.write(f"Fonction de cout: {config_data['lossFunction']}\n")
         f.write(f"Nombre d'epoques: {config_data['numEpochs']}\n")
         f.write(f"Nombre de couches: {config_data['numLayers']}\n")

@@ -1,9 +1,9 @@
-Fichier Data : uploads\Advertising Budget and Sales.csv
-Colonne cible: Sales ($)
-Colonnes d'entree: TV Ad Budget ($), Radio Ad Budget ($), Newspaper Ad Budget ($)
+Fichier Data : uploads\insurance.csv
+Colonne cible: charges
+Colonnes d'entree: age, sex, bmi, children, smoker, region
 Type de probleme: regression
 Fonction de cout: mse
-Nombre d'epoques: 14
+Nombre d'epoques: 140
 Nombre de couches: 2
-Neurones par couche: 15, 6
+Neurones par couche: 18, 10
 Fonction d'activation: relu

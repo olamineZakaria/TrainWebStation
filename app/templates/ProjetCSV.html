@@ -263,16 +263,10 @@ $('#numLayers').on('change', function() {
     updateNeuronsPerLayer();
 });
 function trainModel() {
-    // Disable the Train Model button while training is in progress
     $('#trainModelButton').attr('disabled', true);
-
-    // Show the spinner during training
     $('#configSpinner').show();
-
-    // Hide any previous alert messages
     $('#alertMessage1').hide();
 
-    // Appel AJAX pour envoyer la requête vers Flask
     fetch('/train_model', {
         method: 'POST',
         headers: {
@@ -282,41 +276,29 @@ function trainModel() {
     })
     .then(response => {
         if (!response.ok) {
-            // If there is a server error, throw the response to catch the error below
             return response.json().then(errorData => {
                 throw new Error(errorData.error);
             });
         }
-        return response.json();  // Parse the JSON if request was successful
+        return response.json();
     })
     .then(data => {
-        console.log(data.message); // Log de la réponse du serveur
-        
-        // Show success message
+        console.log(data.message);
         showAlert(data.message, 'success', 'alertMessage1');
-        
-        // Re-enable the Train Model button after training completes
         $('#trainModelButton').attr('disabled', false);
-
-        // Hide the spinner after training is complete
         $('#configSpinner').hide();
 
-        // Refresh the plot image by updating its src attribute with a timestamp to avoid caching
+        // Refresh the plot image
         const plotImage = document.getElementById('plotImage');
-        plotImage.src = plotImage.src.split('?')[0] + '?' + new Date().getTime();  // Adding timestamp
-
+        plotImage.src = plotImage.src.split('?')[0] + '?' + new Date().getTime();  // Adding timestamp to refresh
     })
     .catch(error => {
-        // Show error message
         showAlert(error.message, 'danger', 'alertMessage1');
-        
-        // Re-enable the Train Model button even if there's an error
         $('#trainModelButton').attr('disabled', false);
-
-        // Hide the spinner in case of an error
         $('#configSpinner').hide();
     });
 }
+
 
 
 

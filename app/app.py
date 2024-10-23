@@ -79,16 +79,22 @@ def save_config():
 @app.route('/train_model', methods=['POST'])
 def train_model():
     try:
-        model = ANNRegressionModel('model_config.txt')  # Changez 'config.txt' par le bon fichier
+        model = ANNRegressionModel('model_config.txt')
         model.load_data()
         model.build_model()
         model.train_model()
         model.evaluate_model()
+
+        # Save the model summary as an image
+        model_summary_image_path = model.print_model_summary()
+
         model.plot_learning_curve()
-        return jsonify({'message': "Modèle entraîné avec succès"}), 200  # Return valid JSON response
+
+        return jsonify({'message': "Modèle entraîné avec succès", 'model_summary_image': model_summary_image_path}), 200
     except Exception as e:
         print(f"Erreur lors de l'entraînement du modèle : {e}")
-        return jsonify({'error': str(e)}), 400  # Return error in JSON format
+        return jsonify({'error': str(e)}), 400
+
 
 if __name__ == '__main__':
     app.run(debug=True)

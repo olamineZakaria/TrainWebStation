@@ -7,6 +7,8 @@ from sklearn.preprocessing import StandardScaler, OneHotEncoder
 from sklearn.compose import ColumnTransformer
 import os
 import matplotlib
+from io import StringIO
+
 
 class ANNRegressionModel:
     def __init__(self, config_file):
@@ -113,25 +115,57 @@ class ANNRegressionModel:
 
     matplotlib.use('Agg')
     def plot_learning_curve(self):
-        # Create the 'assets/plots' directory if it doesn't exist
-        plots_dir = os.path.join('app','static', 'assets', 'plots')
+    # Create the 'assets/plots' directory if it doesn't exist
+        plots_dir = os.path.join('static', 'assets', 'plots')
         os.makedirs(plots_dir, exist_ok=True)
+
+        # Check if the history contains the necessary keys
+        if 'loss' not in self.history.history or 'val_loss' not in self.history.history:
+            print("No loss data found in history. Plotting cannot be done.")
+            return
+
         # Plot the learning curves
         plt.figure(figsize=(12, 6))
-        plt.plot(self.history.history['loss'], label='Perte d\'entraînement')
-        plt.plot(self.history.history['val_loss'], label='Perte de validation')
-        plt.title('Courbe d\'apprentissage')
-        plt.xlabel('Époques')
-        plt.ylabel('Perte')
-        plt.legend()
+        
+        try:
+            plt.plot(self.history.history['loss'], label='Perte d\'entraînement', color='blue')
+            plt.plot(self.history.history['val_loss'], label='Perte de validation', color='orange')
+            plt.title('Courbe d\'apprentissage')
+            plt.xlabel('Époques')
+            plt.ylabel('Perte')
+            plt.legend()
+            
+            # Save the plot in the 'assets/plots' directory
+            plot_path = os.path.join(plots_dir, 'learning_curve.png')
+            plt.savefig(plot_path)
+            print(f"Learning curve saved at {plot_path}")
 
-        # Save the plot in the 'assets/plots' directory
-        plot_path = os.path.join(plots_dir, 'learning_curve.png')
-        plt.savefig(plot_path)
+        except Exception as e:
+            print(f"An error occurred while plotting the learning curve: {e}")
 
-        # Optionally clear the plot to free up memory
-        plt.clf()
+        finally:
+            # Clear the plot to free up memory
+            plt.clf()
+
 
     def print_model_summary(self):
-        # Afficher le résumé du modèle
-        self.model.summary()
+        # Capture the model summary as a string
+        stream = StringIO()
+        self.model.summary(print_fn=lambda x: stream.write(x + '\n'))
+        model_summary_str = stream.getvalue()
+
+        # Create a new figure for the summary
+        plt.figure(figsize=(10, 5))
+        plt.text(0, 1, model_summary_str, fontsize=10, ha='left', va='top', family='monospace')
+        plt.axis('off')  # Turn off the axis
+
+        # Define the paths for saving the summary image
+        plots_dir = os.path.join('static', 'assets', 'plots')
+        os.makedirs(plots_dir, exist_ok=True)
+        
+        # Save in the 'plots' directory
+        summary_image_path = os.path.join(plots_dir, 'model_summary.png')
+        plt.savefig(summary_image_path, bbox_inches='tight', pad_inches=0.1)
+        plt.close()  # Close the plot to free up memory
+
+        return summary_image_path  # Return the path to the saved image

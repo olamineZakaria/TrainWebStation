@@ -96,36 +96,25 @@ class ANNRegressionModel:
         self.X_test = scaler.transform(self.X_test)
 
     def build_model(self):
-        # Initialize the model
+        # Créer le modèle ANN
         self.model = tf.keras.Sequential()
 
-        # Add hidden layers
+        # Ajouter les couches cachées
         neurons = self.model_info['neurons']
+
         for i in range(len(neurons)):
             if i == 0:
-                # First hidden layer with specified input shape
+                # Première couche cachée
                 self.model.add(tf.keras.layers.Dense(units=neurons[i], activation=self.model_info['activation'], input_shape=(self.X_train.shape[1],)))
             else:
-                # Additional hidden layers
+                # Couches cachées suivantes
                 self.model.add(tf.keras.layers.Dense(units=neurons[i], activation=self.model_info['activation']))
 
-        # Output layer configuration
-        if self.num_classes == 1:
-            # Regression: single output unit, no activation function
-            self.model.add(tf.keras.layers.Dense(units=1))
-            loss_function = self.model_info['loss_function']
-        elif self.num_classes == 2:
-            # Binary classification: single output unit with sigmoid activation
-            self.model.add(tf.keras.layers.Dense(units=1, activation='sigmoid'))
-            loss_function = 'binary_crossentropy'
-        else:
-            # Multi-class classification: units equal to num_classes, softmax activation
-            self.model.add(tf.keras.layers.Dense(units=self.num_classes, activation='softmax'))
-            loss_function = 'categorical_crossentropy'
+        # Ajouter la couche de sortie
+        self.model.add(tf.keras.layers.Dense(units=1))  # Pour la régression, on a une sortie
 
-        # Compile the model
-        self.model.compile(optimizer='adam', loss=loss_function, metrics=['accuracy'])
-
+        # Compiler le modèle
+        self.model.compile(optimizer='adam', loss=self.model_info['loss_function'])
 
     def train_model(self):
         # Entraîner le modèle
@@ -219,7 +208,7 @@ class ANNRegressionModel:
         plt.figure(figsize=(6, 4))
         plt.axis('off')
         plt.text(0.5, 0.5, metrics_text, ha='center', va='center', fontsize=12, family='monospace')
-        metrics_image_path = os.path.join(plots_dir, 'classification_report.png')
+        metrics_image_path = os.path.join(plots_dir, 'regression_metrics.png')
         plt.savefig(metrics_image_path, bbox_inches='tight', pad_inches=0.5)
         plt.close()
         

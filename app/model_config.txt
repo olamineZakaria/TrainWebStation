@@ -1,8 +1,8 @@
-Fichier Data : uploads\Linear Regression - Sheet1.csv
-Colonne cible: X
-Colonnes d'entree: Y
-Type de probleme: regression
-Fonction de cout: mse
+Fichier Data : uploads\Raisin_Dataset.csv
+Colonne cible: Class
+Colonnes d'entree: Area, MajorAxisLength, MinorAxisLength, Eccentricity, ConvexArea, Extent, Perimeter
+Type de probleme: classification
+Fonction de cout: cross_entropy
 Nombre d'epoques: 120
 Nombre de couches: 2
 Neurones par couche: 10, 10

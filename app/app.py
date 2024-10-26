@@ -1,6 +1,8 @@
 from flask import Flask, render_template, redirect, url_for, session ,request, jsonify
 import os
 from ann_regression_model import ANNRegressionModel
+import base64
+from datetime import datetime
 app = Flask(__name__)
 # app.secret_key = 'your_secret_key'  # Cle secrète pour les sessions
 
@@ -95,6 +97,22 @@ def train_model():
         print(f"Erreur lors de l'entraînement du modèle : {e}")
         return jsonify({'error': str(e)}), 400
 
+@app.route('/upload_image', methods=['POST'])
+def upload_image():
+    data = request.get_json()
+    image_data = data['image']
+    class_name = data['className']
 
+    # Decode image and prepare to save
+    image_data = base64.b64decode(image_data.split(',')[1])
+    timestamp = datetime.now().strftime("%Y%m%d%H%M%S%f")
+    folder_path = os.path.join('uploads', class_name)
+    os.makedirs(folder_path, exist_ok=True)
+    
+    file_path = os.path.join(folder_path, f"{timestamp}.png")
+    with open(file_path, 'wb') as f:
+        f.write(image_data)
+
+    return jsonify({"status": "success", "filePath": file_path})
 if __name__ == '__main__':
     app.run(debug=True)

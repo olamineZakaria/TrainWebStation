@@ -1,9 +1,0 @@
-Fichier Data : uploads\Raisin_Dataset.csv
-Colonne cible: Class
-Colonnes d'entree: Area, MajorAxisLength, MinorAxisLength, Eccentricity, ConvexArea, Extent, Perimeter
-Type de probleme: classification
-Fonction de cout: cross_entropy
-Nombre d'epoques: 120
-Nombre de couches: 2
-Neurones par couche: 10, 10
-Fonction d'activation: relu

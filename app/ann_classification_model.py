@@ -5,6 +5,9 @@ import matplotlib.pyplot as plt
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler, OneHotEncoder, LabelEncoder
 from sklearn.compose import ColumnTransformer
+import os
+from io import StringIO
+from sklearn.metrics import classification_report
 
 class ANNClassificationModel:
     def __init__(self, config_file):
@@ -103,21 +106,22 @@ class ANNClassificationModel:
 
         # Add hidden layers
         neurons = self.model_info['neurons']
+        use_sigmoid_for_all = self.num_classes > 2  # Use sigmoid for all layers if it's a multi-class classification
 
         for i in range(len(neurons)):
             if i == 0:
                 # First hidden layer
-                self.model.add(tf.keras.layers.Dense(units=neurons[i], activation=self.model_info['activation'], input_shape=(self.X_train.shape[1],)))
+                self.model.add(tf.keras.layers.Dense(units=neurons[i], activation='sigmoid' if use_sigmoid_for_all else self.model_info['activation'], input_shape=(self.X_train.shape[1],)))
             else:
                 # Subsequent hidden layers
-                self.model.add(tf.keras.layers.Dense(units=neurons[i], activation=self.model_info['activation']))
+                self.model.add(tf.keras.layers.Dense(units=neurons[i], activation='sigmoid' if use_sigmoid_for_all else self.model_info['activation']))
 
         # Add output layer
         if self.num_classes > 2:
-            # Multi-class classification
+            # Multi-class classification with sigmoid in the output layer
             self.model.add(tf.keras.layers.Dense(units=self.num_classes, activation='softmax'))
         else:
-            # Binary classification
+            # Binary classification with standard sigmoid output
             self.model.add(tf.keras.layers.Dense(units=1, activation='sigmoid'))
 
         # Compile the model
@@ -135,18 +139,93 @@ class ANNClassificationModel:
         print(f'Accuracy on test set: {accuracy}')
 
     def plot_learning_curve(self):
-        # Plot learning curves
-        plt.figure(figsize=(12, 6))
-        plt.plot(self.history.history['loss'], label='Training Loss')
-        plt.plot(self.history.history['val_loss'], label='Validation Loss')
-        plt.plot(self.history.history['accuracy'], label='Training Accuracy')
-        plt.plot(self.history.history['val_accuracy'], label='Validation Accuracy')
-        plt.title('Learning Curves')
-        plt.xlabel('Epochs')
-        plt.ylabel('Loss / Accuracy')
-        plt.legend()
-        plt.show()
+        # Create the 'assets/plots' directory if it doesn't exist
+        plots_dir = os.path.join('app','static', 'assets', 'plots')
+        os.makedirs(plots_dir, exist_ok=True)
 
+        # Check if the history contains the necessary keys
+        required_keys = ['loss', 'val_loss', 'accuracy', 'val_accuracy']
+        if not all(key in self.history.history for key in required_keys):
+            print("Missing data in history. Ensure 'loss', 'val_loss', 'accuracy', and 'val_accuracy' are available.")
+            return
+
+        # Plot the learning curves
+        plt.figure(figsize=(12, 6))
+
+        try:
+            # Plot Loss
+            plt.plot(self.history.history['loss'], label='Training Loss', color='blue', linestyle='--')
+            plt.plot(self.history.history['val_loss'], label='Validation Loss', color='orange', linestyle='--')
+
+            # Plot Accuracy
+            plt.plot(self.history.history['accuracy'], label='Training Accuracy', color='blue')
+            plt.plot(self.history.history['val_accuracy'], label='Validation Accuracy', color='orange')
+
+            plt.title('Learning Curves')
+            plt.xlabel('Epochs')
+            plt.ylabel('Loss / Accuracy')
+            plt.legend()
+
+            # Save the plot in the 'assets/plots' directory
+            plot_path = os.path.join(plots_dir, 'learning_curve.png')
+            plt.savefig(plot_path)
+            print(f"Learning curve saved at {plot_path}")
+
+        except Exception as e:
+            print(f"An error occurred while plotting the learning curve: {e}")
+
+        finally:
+            # Clear the plot to free up memory
+            plt.clf()
     def print_model_summary(self):
-        # Print the model summary
-        self.model.summary()
+    # Capture the model summary as a string
+        stream = StringIO()
+        self.model.summary(print_fn=lambda x: stream.write(x + '\n'))
+        model_summary_str = stream.getvalue()
+
+        # Create a new figure for the summary
+        plt.figure(figsize=(10, 5))
+        plt.text(0, 1, model_summary_str, fontsize=10, ha='left', va='top', family='monospace')
+        plt.axis('off')  # Turn off the axis for cleaner output
+
+        # Define the paths for saving the summary image
+        plots_dir = os.path.join('app','static', 'assets', 'plots')
+        os.makedirs(plots_dir, exist_ok=True)
+        
+        # Save the summary as an image in the 'plots' directory
+        summary_image_path = os.path.join(plots_dir, 'model_summary.png')
+        plt.savefig(summary_image_path, bbox_inches='tight', pad_inches=0.1)
+        print(f"Model summary saved at {summary_image_path}")
+
+        # Clear and close the plot to free up memory
+        return summary_image_path
+    
+    def save_classification_report_as_image(self):
+        # Generate predictions on the test set
+        y_pred = (self.model.predict(self.X_test) > 0.5).astype("int32")  # Threshold for binary classification
+
+        # If multi-class, apply argmax
+        if self.num_classes > 2:
+            y_pred = y_pred.argmax(axis=1)
+            y_true = self.y_test.argmax(axis=1)
+        else:
+            y_true = self.y_test
+
+        # Generate classification report
+        report = classification_report(y_true, y_pred)
+        
+        # Set up the directory for saving plots
+        plots_dir = os.path.join('app', 'static', 'assets', 'plots')
+        os.makedirs(plots_dir, exist_ok=True)
+        
+        # Plot the report
+        plt.figure(figsize=(8, 6))
+        plt.axis('off')
+        plt.text(0.01, 1.0, report, ha='left', va='top', fontsize=10, family='monospace')
+
+        # Save the report as an image
+        report_image_path = os.path.join(plots_dir, 'classification_report.png')
+        plt.savefig(report_image_path, bbox_inches='tight', pad_inches=0.5)
+        plt.close()  # Close the plot to free memory
+
+        print(f"Classification report saved at {report_image_path}")

@@ -147,6 +147,7 @@
                                   <option value="relu">ReLU</option>
                                   <option value="sigmoid">Sigmoid</option>
                                   <option value="tanh">Tanh</option>
+                                  <option value="softmax">Softmax</option>
                               </select>
                           </div>
                           <br><br>
@@ -173,11 +174,19 @@
                     </div>
                     <div class="col-12">
                         <div>
+                            <h3 class="display-4 text-center mt-4 mb-5">Learning curve :</h3>
                             <img id="plotImage" src="{{url_for('static',filename='assets/plots/learning_curve.png')}}" alt="Plot Image" class="img-fluid" style="max-width: 100%; height: auto;" />
+                            <br>
+                            <h3 class="display-4 text-center mt-4 mb-5">Model summary :</h3>
+                            <img id="plotImage_1" src="{{url_for('static',filename='assets/plots/model_summary.png')}}" alt="Plot Image" class="img-fluid" style="max-width: 100%; height: auto;" />
+                            <br>
+                            <h3 class="display-4 text-center mt-4 mb-5">Metrics :</h3>
+                            <img id="plotImage_2" src="{{url_for('static',filename='assets/plots/classification_report.png')}}" alt="Plot Image" class="img-fluid" style="max-width: 100%; height: auto;" />
                         </div>
                     </div>
                 </div>
                 <button type="button" class="btn btn-secondary prevBtn">Previous</button>
+                <br><br><br>
             </div>
           
           </form>
@@ -290,7 +299,11 @@ function trainModel() {
 
         // Refresh the plot image
         const plotImage = document.getElementById('plotImage');
+        const plotImage_2 = document.getElementById('plotImage_2');
+        
         plotImage.src = plotImage.src.split('?')[0] + '?' + new Date().getTime();  // Adding timestamp to refresh
+        plotImage_2.src = plotImage_2.src.split('?')[0] + '?' + new Date().getTime();  // Adding timestamp to refresh
+
     })
     .catch(error => {
         showAlert(error.message, 'danger', 'alertMessage1');

@@ -1,8 +1,11 @@
 from flask import Flask, render_template, redirect, url_for, session ,request, jsonify
 import os
 from ann_regression_model import ANNRegressionModel
+from ann_classification_model import ANNClassificationModel
 import base64
 from datetime import datetime
+from get_model_data import extract_model_info
+
 app = Flask(__name__)
 # app.secret_key = 'your_secret_key'  # Cle secrète pour les sessions
 
@@ -81,18 +84,39 @@ def save_config():
 @app.route('/train_model', methods=['POST'])
 def train_model():
     try:
-        model = ANNRegressionModel('model_config.txt')
-        model.load_data()
-        model.build_model()
-        model.train_model()
-        model.evaluate_model()
+        model_info = extract_model_info('model_config.txt')
+        print(model_info)
+        if model_info['problemType'] == 'regression':
+            print('regression')
+            model = ANNRegressionModel('model_config.txt')
+            model.load_data()
+            model.build_model()
+            model.train_model()
+            model.evaluate_model()
 
-        # Save the model summary as an image
-        model_summary_image_path = model.print_model_summary()
+            # Save the model summary as an image
+            model_summary_image_path = model.print_model_summary()
+            model.save_regression_metrics_as_image()
+            model.plot_learning_curve()
 
-        model.plot_learning_curve()
+            return jsonify({'message': "Modèle de regression entraîné avec succès", 'model_summary_image': model_summary_image_path}), 200
+        
+        elif model_info['problemType'] == 'classification':
+            print('classification')
+            model = ANNClassificationModel('model_config.txt')
+            model.load_data()
+            model.build_model()
+            model.train_model()
+            model.evaluate_model()
 
-        return jsonify({'message': "Modèle entraîné avec succès", 'model_summary_image': model_summary_image_path}), 200
+            model_summary_image_path = model.print_model_summary()
+
+
+            model.plot_learning_curve()
+            model.save_classification_report_as_image()
+
+            return jsonify({'message': "Modèle de classification entraîné avec succès", 'model_summary_image': model_summary_image_path}), 200
+    
     except Exception as e:
         print(f"Erreur lors de l'entraînement du modèle : {e}")
         return jsonify({'error': str(e)}), 400

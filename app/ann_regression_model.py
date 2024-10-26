@@ -3,11 +3,12 @@ import re
 import tensorflow as tf
 import matplotlib.pyplot as plt
 from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import StandardScaler, OneHotEncoder
+from sklearn.preprocessing import StandardScaler, OneHotEncoder, LabelEncoder
 from sklearn.compose import ColumnTransformer
 import os
 import matplotlib
 from io import StringIO
+from sklearn.metrics import mean_absolute_error, mean_squared_error
 
 
 class ANNRegressionModel:
@@ -95,25 +96,36 @@ class ANNRegressionModel:
         self.X_test = scaler.transform(self.X_test)
 
     def build_model(self):
-        # Créer le modèle ANN
+        # Initialize the model
         self.model = tf.keras.Sequential()
 
-        # Ajouter les couches cachées
+        # Add hidden layers
         neurons = self.model_info['neurons']
-
         for i in range(len(neurons)):
             if i == 0:
-                # Première couche cachée
+                # First hidden layer with specified input shape
                 self.model.add(tf.keras.layers.Dense(units=neurons[i], activation=self.model_info['activation'], input_shape=(self.X_train.shape[1],)))
             else:
-                # Couches cachées suivantes
+                # Additional hidden layers
                 self.model.add(tf.keras.layers.Dense(units=neurons[i], activation=self.model_info['activation']))
 
-        # Ajouter la couche de sortie
-        self.model.add(tf.keras.layers.Dense(units=1))  # Pour la régression, on a une sortie
+        # Output layer configuration
+        if self.num_classes == 1:
+            # Regression: single output unit, no activation function
+            self.model.add(tf.keras.layers.Dense(units=1))
+            loss_function = self.model_info['loss_function']
+        elif self.num_classes == 2:
+            # Binary classification: single output unit with sigmoid activation
+            self.model.add(tf.keras.layers.Dense(units=1, activation='sigmoid'))
+            loss_function = 'binary_crossentropy'
+        else:
+            # Multi-class classification: units equal to num_classes, softmax activation
+            self.model.add(tf.keras.layers.Dense(units=self.num_classes, activation='softmax'))
+            loss_function = 'categorical_crossentropy'
 
-        # Compiler le modèle
-        self.model.compile(optimizer='adam', loss=self.model_info['loss_function'])
+        # Compile the model
+        self.model.compile(optimizer='adam', loss=loss_function, metrics=['accuracy'])
+
 
     def train_model(self):
         # Entraîner le modèle
@@ -127,7 +139,7 @@ class ANNRegressionModel:
     matplotlib.use('Agg')
     def plot_learning_curve(self):
     # Create the 'assets/plots' directory if it doesn't exist
-        plots_dir = os.path.join('static', 'assets', 'plots')
+        plots_dir = os.path.join('app','static', 'assets', 'plots')
         os.makedirs(plots_dir, exist_ok=True)
 
         # Check if the history contains the necessary keys
@@ -171,7 +183,7 @@ class ANNRegressionModel:
         plt.axis('off')  # Turn off the axis
 
         # Define the paths for saving the summary image
-        plots_dir = os.path.join('static', 'assets', 'plots')
+        plots_dir = os.path.join('app','static', 'assets', 'plots')
         os.makedirs(plots_dir, exist_ok=True)
         
         # Save in the 'plots' directory
@@ -180,3 +192,35 @@ class ANNRegressionModel:
         plt.close()  # Close the plot to free up memory
 
         return summary_image_path  # Return the path to the saved image
+    
+    def save_regression_metrics_as_image(self):
+        # Generate predictions on the test set
+        y_pred = self.model.predict(self.X_test)
+        y_pred = y_pred.flatten()  # Ensure y_pred is a 1D array
+
+        # Ensure y_test is also flattened for comparison
+        self.y_test = self.y_test.flatten()
+
+        # Calculate regression metrics
+        mae = mean_absolute_error(self.y_test, y_pred)
+        mse = mean_squared_error(self.y_test, y_pred, squared=True)  # For Mean Squared Error
+        rmse = mean_squared_error(self.y_test, y_pred, squared=False)  # For Root Mean Squared Error
+
+        # Format the metrics as text
+        metrics_text = (
+            f"Mean Absolute Error (MAE): {mae:.2f}\n"
+            f"Mean Squared Error (MSE): {mse:.2f}\n"
+            f"Root Mean Squared Error (RMSE): {rmse:.2f}"
+        )
+
+        # Save metrics as image
+        plots_dir = os.path.join('app', 'static', 'assets', 'plots')
+        os.makedirs(plots_dir, exist_ok=True)
+        plt.figure(figsize=(6, 4))
+        plt.axis('off')
+        plt.text(0.5, 0.5, metrics_text, ha='center', va='center', fontsize=12, family='monospace')
+        metrics_image_path = os.path.join(plots_dir, 'classification_report.png')
+        plt.savefig(metrics_image_path, bbox_inches='tight', pad_inches=0.5)
+        plt.close()
+        
+        print(f"Regression metrics saved at {metrics_image_path}")

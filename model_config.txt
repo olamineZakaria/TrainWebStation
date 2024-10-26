@@ -1,9 +1,9 @@
 Fichier Data : uploads\Customer Purchasing Behaviors.csv
-Colonne cible: loyalty_score
-Colonnes d'entree: age, annual_income, purchase_amount, region
+Colonne cible: annual_income
+Colonnes d'entree: age, purchase_amount
 Type de probleme: regression
 Fonction de cout: mse
-Nombre d'epoques: 140
-Nombre de couches: 2
-Neurones par couche: 20, 10
+Nombre d'epoques: 70
+Nombre de couches: 3
+Neurones par couche: 40, 20, 10
 Fonction d'activation: relu

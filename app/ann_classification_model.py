@@ -3,14 +3,10 @@ import re
 import tensorflow as tf
 import matplotlib.pyplot as plt
 from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import StandardScaler, OneHotEncoder
+from sklearn.preprocessing import StandardScaler, OneHotEncoder, LabelEncoder
 from sklearn.compose import ColumnTransformer
-import os
-import matplotlib
-from io import StringIO
 
-
-class ANNRegressionModel:
+class ANNClassificationModel:
     def __init__(self, config_file):
         self.model_info = self.extract_model_info(config_file)
         self.model = None
@@ -19,6 +15,7 @@ class ANNRegressionModel:
         self.X_test = None
         self.y_train = None
         self.y_test = None
+        self.num_classes = None  # Automatically determined later
 
     def extract_model_info(self, config_file):
         # Define the regex patterns
@@ -30,7 +27,7 @@ class ANNRegressionModel:
             'epochs': r'Nombre d\'epoques:\s*(\d+)',
             'layers': r'Nombre de couches:\s*(\d+)',
             'neurons': r'Neurones par couche:\s*(.*)',
-            'activation': r'Fonction d\'activation:\s*(.*)'
+            'activation': r'Fonction d\'activation:\s*(.*)',
         }
 
         model_info = {}
@@ -47,7 +44,7 @@ class ANNRegressionModel:
                 elif key == 'neurons':
                     model_info[key] = [int(neuron.strip()) for neuron in match.group(1).split(',')]
                 elif key in ['epochs', 'layers']:
-                    model_info[key] = int(match.group(1))  # Convertir en entier
+                    model_info[key] = int(match.group(1))  # Convert to integer
                 else:
                     model_info[key] = match.group(1).strip()
 
@@ -72,12 +69,18 @@ class ANNRegressionModel:
         X = df[self.model_info['input_columns']]
         y = df[self.model_info['target_column']].values
 
+        # Debug: Print unique values of the target column
+        print("Unique values in target column:", pd.unique(y))
+
         # Automatically detect the number of classes
         self.num_classes = len(pd.unique(y))
 
         # Label encode the target variable
         label_encoder = LabelEncoder()
         y = label_encoder.fit_transform(y)  # Convert species names to numeric labels
+        
+        # Debug: Print encoded target variable
+        print("Encoded target variable:", y)
 
         # One-Hot Encode the target if multi-class classification
         if self.num_classes > 2:
@@ -95,88 +98,55 @@ class ANNRegressionModel:
         self.X_test = scaler.transform(self.X_test)
 
     def build_model(self):
-        # Créer le modèle ANN
+        # Create the ANN model
         self.model = tf.keras.Sequential()
 
-        # Ajouter les couches cachées
+        # Add hidden layers
         neurons = self.model_info['neurons']
 
         for i in range(len(neurons)):
             if i == 0:
-                # Première couche cachée
+                # First hidden layer
                 self.model.add(tf.keras.layers.Dense(units=neurons[i], activation=self.model_info['activation'], input_shape=(self.X_train.shape[1],)))
             else:
-                # Couches cachées suivantes
+                # Subsequent hidden layers
                 self.model.add(tf.keras.layers.Dense(units=neurons[i], activation=self.model_info['activation']))
 
-        # Ajouter la couche de sortie
-        self.model.add(tf.keras.layers.Dense(units=1))  # Pour la régression, on a une sortie
+        # Add output layer
+        if self.num_classes > 2:
+            # Multi-class classification
+            self.model.add(tf.keras.layers.Dense(units=self.num_classes, activation='softmax'))
+        else:
+            # Binary classification
+            self.model.add(tf.keras.layers.Dense(units=1, activation='sigmoid'))
 
-        # Compiler le modèle
-        self.model.compile(optimizer='adam', loss=self.model_info['loss_function'])
+        # Compile the model
+        loss_function = 'categorical_crossentropy' if self.num_classes > 2 else 'binary_crossentropy'
+        self.model.compile(optimizer='adam', loss=loss_function, metrics=['accuracy'])
 
     def train_model(self):
-        # Entraîner le modèle
+        # Train the model
         self.history = self.model.fit(self.X_train, self.y_train, epochs=self.model_info['epochs'], batch_size=10, verbose=1, validation_split=0.2)
 
     def evaluate_model(self):
-        # Évaluer le modèle
-        loss = self.model.evaluate(self.X_test, self.y_test)
-        print(f'Perte sur l\'ensemble de test : {loss}')
+        # Evaluate the model
+        loss, accuracy = self.model.evaluate(self.X_test, self.y_test)
+        print(f'Loss on test set: {loss}')
+        print(f'Accuracy on test set: {accuracy}')
 
-    matplotlib.use('Agg')
     def plot_learning_curve(self):
-    # Create the 'assets/plots' directory if it doesn't exist
-        plots_dir = os.path.join('static', 'assets', 'plots')
-        os.makedirs(plots_dir, exist_ok=True)
-
-        # Check if the history contains the necessary keys
-        if 'loss' not in self.history.history or 'val_loss' not in self.history.history:
-            print("No loss data found in history. Plotting cannot be done.")
-            return
-
-        # Plot the learning curves
+        # Plot learning curves
         plt.figure(figsize=(12, 6))
-        
-        try:
-            plt.plot(self.history.history['loss'], label='Perte d\'entraînement', color='blue')
-            plt.plot(self.history.history['val_loss'], label='Perte de validation', color='orange')
-            plt.title('Courbe d\'apprentissage')
-            plt.xlabel('Époques')
-            plt.ylabel('Perte')
-            plt.legend()
-            
-            # Save the plot in the 'assets/plots' directory
-            plot_path = os.path.join(plots_dir, 'learning_curve.png')
-            plt.savefig(plot_path)
-            print(f"Learning curve saved at {plot_path}")
-
-        except Exception as e:
-            print(f"An error occurred while plotting the learning curve: {e}")
-
-        finally:
-            # Clear the plot to free up memory
-            plt.clf()
-
+        plt.plot(self.history.history['loss'], label='Training Loss')
+        plt.plot(self.history.history['val_loss'], label='Validation Loss')
+        plt.plot(self.history.history['accuracy'], label='Training Accuracy')
+        plt.plot(self.history.history['val_accuracy'], label='Validation Accuracy')
+        plt.title('Learning Curves')
+        plt.xlabel('Epochs')
+        plt.ylabel('Loss / Accuracy')
+        plt.legend()
+        plt.show()
 
     def print_model_summary(self):
-        # Capture the model summary as a string
-        stream = StringIO()
-        self.model.summary(print_fn=lambda x: stream.write(x + '\n'))
-        model_summary_str = stream.getvalue()
-
-        # Create a new figure for the summary
-        plt.figure(figsize=(10, 5))
-        plt.text(0, 1, model_summary_str, fontsize=10, ha='left', va='top', family='monospace')
-        plt.axis('off')  # Turn off the axis
-
-        # Define the paths for saving the summary image
-        plots_dir = os.path.join('static', 'assets', 'plots')
-        os.makedirs(plots_dir, exist_ok=True)
-        
-        # Save in the 'plots' directory
-        summary_image_path = os.path.join(plots_dir, 'model_summary.png')
-        plt.savefig(summary_image_path, bbox_inches='tight', pad_inches=0.1)
-        plt.close()  # Close the plot to free up memory
-
-        return summary_image_path  # Return the path to the saved image
+        # Print the model summary
+        self.model.summary()

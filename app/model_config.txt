@@ -1,9 +1,9 @@
-Fichier Data : uploads\insurance.csv
-Colonne cible: charges
-Colonnes d'entree: age, sex, bmi, children, smoker, region
+Fichier Data : uploads\Linear Regression - Sheet1.csv
+Colonne cible: X
+Colonnes d'entree: Y
 Type de probleme: regression
 Fonction de cout: mse
-Nombre d'epoques: 140
+Nombre d'epoques: 120
 Nombre de couches: 2
-Neurones par couche: 18, 10
+Neurones par couche: 10, 10
 Fonction d'activation: relu

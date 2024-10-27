@@ -186,6 +186,8 @@
                     </div>
                 </div>
                 <button type="button" class="btn btn-secondary prevBtn">Previous</button>
+                <button type="button" class="btn btn-primary" id="downloadModelButton" onclick="download_model()" disabled>Download Model</button>
+                <div id="configAlertMessage" class="alert mt-3" style=""></div>
                 <br><br><br>
             </div>
           
@@ -272,48 +274,54 @@ $('#numLayers').on('change', function() {
     updateNeuronsPerLayer();
 });
 function trainModel() {
-    $('#trainModelButton').attr('disabled', true);
+    $('#trainModelButton').attr('disabled', true).text('Training...');
     $('#configSpinner').show();
-    $('#alertMessage1').hide();
+    $('#configAlertMessage').hide();
 
     fetch('/train_model', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ action: 'train_model' })
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ action: 'train_model' })
     })
     .then(response => {
-        if (!response.ok) {
-            return response.json().then(errorData => {
-                throw new Error(errorData.error);
-            });
-        }
-        return response.json();
+      if (!response.ok) {
+        return response.json().then(errorData => {
+          throw new Error(errorData.error);
+        });
+      }
+      return response.json();
     })
     .then(data => {
-        console.log(data.message);
-        showAlert(data.message, 'success', 'alertMessage1');
-        $('#trainModelButton').attr('disabled', false);
-        $('#configSpinner').hide();
+      console.log(data.message);
+      showAlert(data.message, 'success', 'configAlertMessage');
+      $('#trainModelButton').attr('disabled', false).text('Train Model');
+      $('#downloadModelButton').attr('disabled', false);
+      $('#configSpinner').hide();
 
-        // Refresh the plot image
-        const plotImage = document.getElementById('plotImage');
-        const plotImage_2 = document.getElementById('plotImage_2');
-        
-        plotImage.src = plotImage.src.split('?')[0] + '?' + new Date().getTime();  // Adding timestamp to refresh
-        plotImage_2.src = plotImage_2.src.split('?')[0] + '?' + new Date().getTime();  // Adding timestamp to refresh
-
+      // Refresh plot images with timestamp to avoid caching
+      const plotImage = $('#plotImage');
+      const plotImage_2 = $('#plotImage_2');
+      plotImage.attr('src', plotImage.attr('src').split('?')[0] + '?' + new Date().getTime()).show();
+      plotImage_2.attr('src', plotImage_2.attr('src').split('?')[0] + '?' + new Date().getTime()).show();
     })
     .catch(error => {
-        showAlert(error.message, 'danger', 'alertMessage1');
-        $('#trainModelButton').attr('disabled', false);
-        $('#configSpinner').hide();
+      showAlert(error.message, 'danger', 'configAlertMessage');
+      $('#trainModelButton').attr('disabled', false).text('Train Model');
+      $('#configSpinner').hide();
     });
-}
+  }
 
+  function download_model() {
+    // Trigger download request for the trained model
+    window.location.href = '/download_model';
+  }
 
-
+  // Trigger model training on button click
+  $('#trainModelButton').click(function() {
+    trainModel();
+  });
 
 function updateNeuronsPerLayer() {
     const numLayers = $('#numLayers').val();

@@ -1,9 +1,9 @@
-Fichier Data : uploads\Customer Purchasing Behaviors.csv
-Colonne cible: annual_income
-Colonnes d'entree: age, purchase_amount
+Fichier Data : uploads\test.csv
+Colonne cible: y
+Colonnes d'entree: x
 Type de probleme: regression
 Fonction de cout: mse
-Nombre d'epoques: 70
-Nombre de couches: 3
-Neurones par couche: 40, 20, 10
+Nombre d'epoques: 50
+Nombre de couches: 2
+Neurones par couche: 25, 10
 Fonction d'activation: relu

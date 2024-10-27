@@ -3,12 +3,12 @@ import re
 import tensorflow as tf
 import matplotlib.pyplot as plt
 from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import StandardScaler, OneHotEncoder, LabelEncoder
+from sklearn.preprocessing import StandardScaler, OneHotEncoder
 from sklearn.compose import ColumnTransformer
 import os
 import matplotlib
 from io import StringIO
-from sklearn.metrics import mean_absolute_error, mean_squared_error
+from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 
 
 class ANNRegressionModel:
@@ -73,17 +73,7 @@ class ANNRegressionModel:
         X = df[self.model_info['input_columns']]
         y = df[self.model_info['target_column']].values
 
-        # Automatically detect the number of classes
-        self.num_classes = len(pd.unique(y))
-
-        # Label encode the target variable
-        label_encoder = LabelEncoder()
-        y = label_encoder.fit_transform(y)  # Convert species names to numeric labels
-
-        # One-Hot Encode the target if multi-class classification
-        if self.num_classes > 2:
-            y = tf.keras.utils.to_categorical(y, num_classes=self.num_classes)
-
+        
         # Apply transformations
         X_transformed = preprocessor.fit_transform(X)
 
@@ -116,10 +106,24 @@ class ANNRegressionModel:
         # Compiler le modèle
         self.model.compile(optimizer='adam', loss=self.model_info['loss_function'])
 
-    def train_model(self):
-        # Entraîner le modèle
-        self.history = self.model.fit(self.X_train, self.y_train, epochs=self.model_info['epochs'], batch_size=10, verbose=1, validation_split=0.2)
+    # def train_model(self):
+    #     # Entraîner le modèle
+    #     self.history = self.model.fit(self.X_train, self.y_train, epochs=self.model_info['epochs'], batch_size=10, verbose=1, validation_split=0.2)    
 
+    def train_model(self):
+        # Train the model
+        self.history = self.model.fit(self.X_train, self.y_train, epochs=self.model_info['epochs'], batch_size=10, verbose=1, validation_split=0.2)
+        
+        # Define the directory and file path for saving the model
+        models_dir = os.path.join('app', 'static', 'models')
+        os.makedirs(models_dir, exist_ok=True)
+        model_path = os.path.join(models_dir, 'trained_model.h5')
+
+        # Save the trained model in .h5 format
+        self.model.save(model_path)
+        
+        print(f"Model saved at {model_path}")
+        
     def evaluate_model(self):
         # Évaluer le modèle
         loss = self.model.evaluate(self.X_test, self.y_test)
@@ -184,22 +188,21 @@ class ANNRegressionModel:
     
     def save_regression_metrics_as_image(self):
         # Generate predictions on the test set
-        y_pred = self.model.predict(self.X_test)
-        y_pred = y_pred.flatten()  # Ensure y_pred is a 1D array
-
-        # Ensure y_test is also flattened for comparison
-        self.y_test = self.y_test.flatten()
+        y_pred = self.model.predict(self.X_test).flatten()
+        y_test_flat = self.y_test.flatten()  # Ensure y_test is flattened
 
         # Calculate regression metrics
-        mae = mean_absolute_error(self.y_test, y_pred)
-        mse = mean_squared_error(self.y_test, y_pred, squared=True)  # For Mean Squared Error
-        rmse = mean_squared_error(self.y_test, y_pred, squared=False)  # For Root Mean Squared Error
+        mae = mean_absolute_error(y_test_flat, y_pred)
+        mse = mean_squared_error(y_test_flat, y_pred, squared=True)  # For Mean Squared Error
+        rmse = mean_squared_error(y_test_flat, y_pred, squared=False)  # For Root Mean Squared Error
+        r_2 = r2_score(y_test_flat, y_pred)
 
         # Format the metrics as text
         metrics_text = (
             f"Mean Absolute Error (MAE): {mae:.2f}\n"
             f"Mean Squared Error (MSE): {mse:.2f}\n"
-            f"Root Mean Squared Error (RMSE): {rmse:.2f}"
+            f"Root Mean Squared Error (RMSE): {rmse:.2f}\n"
+            f"R² Score: {r_2:.2f}"
         )
 
         # Save metrics as image
@@ -208,7 +211,7 @@ class ANNRegressionModel:
         plt.figure(figsize=(6, 4))
         plt.axis('off')
         plt.text(0.5, 0.5, metrics_text, ha='center', va='center', fontsize=12, family='monospace')
-        metrics_image_path = os.path.join(plots_dir, 'regression_metrics.png')
+        metrics_image_path = os.path.join(plots_dir, 'classification_report.png')
         plt.savefig(metrics_image_path, bbox_inches='tight', pad_inches=0.5)
         plt.close()
         

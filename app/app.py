@@ -5,6 +5,7 @@ from ann_classification_model import ANNClassificationModel
 import base64
 from datetime import datetime
 from get_model_data import extract_model_info
+from flask import send_file
 
 app = Flask(__name__)
 # app.secret_key = 'your_secret_key'  # Cle secrète pour les sessions
@@ -138,5 +139,16 @@ def upload_image():
         f.write(image_data)
 
     return jsonify({"status": "success", "filePath": file_path})
+
+@app.route('/download_model', methods=['GET'])
+def download_model():
+    # Define the path to the saved model
+    model_path = os.path.join('static', 'models', 'trained_model.h5')
+    
+    try:
+        # Return the model file for download
+        return send_file(model_path, as_attachment=True, download_name='trained_model.h5')
+    except Exception as e:
+        return jsonify({'error': str(e)}), 400
 if __name__ == '__main__':
     app.run(debug=True)

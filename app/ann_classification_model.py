@@ -132,6 +132,15 @@ class ANNClassificationModel:
         # Train the model
         self.history = self.model.fit(self.X_train, self.y_train, epochs=self.model_info['epochs'], batch_size=10, verbose=1, validation_split=0.2)
 
+        models_dir = os.path.join('app', 'static', 'models')
+        os.makedirs(models_dir, exist_ok=True)
+        model_path = os.path.join(models_dir, 'trained_model.h5')
+
+        # Save the trained model in .h5 format
+        self.model.save(model_path)
+        
+        print(f"Model saved at {model_path}")
+        
     def evaluate_model(self):
         # Evaluate the model
         loss, accuracy = self.model.evaluate(self.X_test, self.y_test)

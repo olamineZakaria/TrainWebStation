@@ -138,10 +138,6 @@ function displayDataInTable(data) {
 }
 
 
-// Gestion de la soumission du formulaire de configuration du modèle
-// Gestion de la soumission du formulaire de configuration du modèle
-
-
 
 // Ajout de la logique pour gérer le nombre de couches et de neurones
 
